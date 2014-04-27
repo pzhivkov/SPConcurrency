@@ -20,6 +20,34 @@
                ReferencedContainer = "container:SPConcurrency.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "30062F89190C9A0D0063E665"
+               BuildableName = "SPConcurrency.framework"
+               BlueprintName = "SPConcurrency.framework"
+               ReferencedContainer = "container:SPConcurrency.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "30201A78190CA20100740762"
+               BuildableName = "SPConcurrency.docs"
+               BlueprintName = "SPConcurrency.docs"
+               ReferencedContainer = "container:SPConcurrency.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
