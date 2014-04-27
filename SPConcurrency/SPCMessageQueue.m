@@ -1,12 +1,17 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPMessageQueue.m
 //  SPMessageQueue.m
 //  Peter Zhivkov.
+=======
+//  SPCMessageQueue.m
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCMessageQueue.m
 //
 //  Created by Peter Zhivkov on 06/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
 //
 
-#import "SPMessageQueue.h"
+#import "SPCMessageQueue.h"
 
 #ifndef DEBUG
 #define NDEBUG
@@ -15,7 +20,7 @@
 #import <assert.h>
 #import <mach/mach.h>
 
-#import "SPRingBuffer.h"
+#import "SPCRingBuffer.h"
 
 
 
@@ -25,14 +30,14 @@
  *  A message queue execution thread used to take messages from the queue 
  *  and post them for execution to the main thread.
  */
-@interface SPMessageQueueExecutionThread : NSThread
+@interface SPCMessageQueueExecutionThread : NSThread
 {
 @public
     semaphore_t _semaphore;
 }
 
 - (instancetype)initWithName:(NSString *)name
-                       queue:(SPMessageQueue *)messageQueue;
+                       queue:(SPCMessageQueue *)messageQueue;
 
 @end
 
@@ -42,10 +47,10 @@
 
 
 
-@interface SPMessageQueue ()
+@interface SPCMessageQueue ()
 
-@property (nonatomic)         SPRingBuffer                   messageBuffer;
-@property (nonatomic, strong) SPMessageQueueExecutionThread *executionThread;
+@property (nonatomic)         SPCRingBuffer                   messageBuffer;
+@property (nonatomic, strong) SPCMessageQueueExecutionThread *executionThread;
 
 @property (nonatomic, copy)   NSString *name;
 
@@ -53,7 +58,7 @@
 
 
 
-@implementation SPMessageQueue
+@implementation SPCMessageQueue
 
 
 
@@ -70,10 +75,10 @@ static const int32_t kMessageBufferSize = 16384;
     if (!self) return nil;
     
     _name = name;
-    _executionThread = [[SPMessageQueueExecutionThread alloc] initWithName:_name
+    _executionThread = [[SPCMessageQueueExecutionThread alloc] initWithName:_name
                                                                      queue:self];
     
-    bool successful = SPRingBufferInit(&_messageBuffer, kMessageBufferSize);
+    bool successful = SPCRingBufferInit(&_messageBuffer, kMessageBufferSize);
     if (!successful) return nil;
     
     return self;
@@ -82,7 +87,7 @@ static const int32_t kMessageBufferSize = 16384;
 
 - (void)dealloc
 {
-    SPRingBufferDispose(&_messageBuffer);
+    SPCRingBufferDispose(&_messageBuffer);
 }
 
 
@@ -98,7 +103,7 @@ static const NSTimeInterval kThreadWaitTimeout = 0.01;
 {
     @synchronized (self.executionThread) {
         if (!self.executionThread) {
-            self.executionThread = [[SPMessageQueueExecutionThread alloc] initWithName:self.name
+            self.executionThread = [[SPCMessageQueueExecutionThread alloc] initWithName:self.name
                                                                                  queue:self];
             
             assert(self.executionThread);
@@ -165,8 +170,8 @@ static const NSTimeInterval kThreadWaitTimeout = 0.01;
 
 
 struct message_t {
-    SPMessageHandler  handler;
-    size_t            userInfoLength;
+    SPCMessageHandler  handler;
+    size_t             userInfoLength;
 };
 
 typedef struct message_t message_t;
@@ -176,13 +181,13 @@ typedef struct message_t message_t;
 //
 // Dispatch a message to a lock-free message queue.
 //
-void SPMessageQueueDispatch(SPMessageQueue *this, SPMessageHandler handler, void *userInfo, size_t userInfoLength)
+void SPCMessageQueueDispatch(SPCMessageQueue *this, SPCMessageHandler handler, void *userInfo, size_t userInfoLength)
 {
     //
     // Write a message to the ring buffer.
     //
     size_t availableBytes;
-    message_t *message = SPRingBufferGetForWrite(&this->_messageBuffer, &availableBytes);
+    message_t *message = SPCRingBufferGetForWrite(&this->_messageBuffer, &availableBytes);
     assert(availableBytes >= sizeof(message_t) + userInfoLength);
     
     memset(message, 0, sizeof(message_t));
@@ -192,7 +197,7 @@ void SPMessageQueueDispatch(SPMessageQueue *this, SPMessageHandler handler, void
     if (userInfoLength > 0)
         memcpy(message + 1, userInfo, userInfoLength);
     
-    SPRingBufferMarkWritten(&this->_messageBuffer, sizeof(message_t) + userInfoLength);
+    SPCRingBufferMarkWritten(&this->_messageBuffer, sizeof(message_t) + userInfoLength);
     
     //
     // Signal the processing thread.
@@ -209,7 +214,7 @@ void SPMessageQueueDispatch(SPMessageQueue *this, SPMessageHandler handler, void
 - (BOOL)hasPendingMessages
 {
     size_t ignore;
-    return SPRingBufferGetForRead(&_messageBuffer, &ignore) != NULL;
+    return SPCRingBufferGetForRead(&_messageBuffer, &ignore) != NULL;
 }
 
 
@@ -221,7 +226,7 @@ void SPMessageQueueDispatch(SPMessageQueue *this, SPMessageHandler handler, void
 - (message_t *)copyLastMessage
 {
     size_t availableBytes = 0;
-    message_t *buffer = SPRingBufferGetForRead(&_messageBuffer, &availableBytes);
+    message_t *buffer = SPCRingBufferGetForRead(&_messageBuffer, &availableBytes);
     if (!buffer)
         return NULL;
     
@@ -229,7 +234,7 @@ void SPMessageQueueDispatch(SPMessageQueue *this, SPMessageHandler handler, void
     size_t messageLength = sizeof(message_t) + buffer->userInfoLength;
     message_t *message = malloc(messageLength);
     memcpy(message, buffer, messageLength);
-    SPRingBufferMarkRead(&_messageBuffer, messageLength);
+    SPCRingBufferMarkRead(&_messageBuffer, messageLength);
     
     return message;
 }
@@ -244,15 +249,15 @@ void SPMessageQueueDispatch(SPMessageQueue *this, SPMessageHandler handler, void
 
 
 
-@interface SPMessageQueueExecutionThread ()
+@interface SPCMessageQueueExecutionThread ()
 
-@property (nonatomic, weak) SPMessageQueue *messageQueue;
+@property (nonatomic, weak) SPCMessageQueue *messageQueue;
 
 @end
 
 
 
-@implementation SPMessageQueueExecutionThread
+@implementation SPCMessageQueueExecutionThread
 
 
 
@@ -261,7 +266,7 @@ void SPMessageQueueDispatch(SPMessageQueue *this, SPMessageHandler handler, void
 
 
 - (instancetype)initWithName:(NSString *)name
-                       queue:(SPMessageQueue *)messageQueue
+                       queue:(SPCMessageQueue *)messageQueue
 {
     self = [super init];
     if (!self) return nil;

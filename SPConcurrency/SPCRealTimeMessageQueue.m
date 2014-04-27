@@ -1,12 +1,17 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPRealTimeMessageQueue.m
 //  SPRealTimeMessageQueue.m
 //  Peter Zhivkov.
+=======
+//  SPCRealTimeMessageQueue.m
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRealTimeMessageQueue.m
 //
 //  Created by Peter Zhivkov on 08/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
 //
 
-#import "SPRealTimeMessageQueue.h"
+#import "SPCRealTimeMessageQueue.h"
 
 #ifndef DEBUG
 #define NDEBUG
@@ -16,25 +21,25 @@
 #include <mach/mach.h>
 #include <string.h>
 
-#import "SPMessageQueue.h"
-#import "SPRingBuffer.h"
+#import "SPCMessageQueue.h"
+#import "SPCRingBuffer.h"
 
 
 
 #pragma mark - Real-time message queue
 
 
-@interface SPRealTimeMessageQueue ()
+@interface SPCRealTimeMessageQueue ()
 
-@property (nonatomic, weak) SPMessageQueue *responseQueue;
-@property (nonatomic)       SPRingBuffer    messageBuffer;
+@property (nonatomic, weak) SPCMessageQueue *responseQueue;
+@property (nonatomic)       SPCRingBuffer    messageBuffer;
 
 @end
 
 
 
 
-@implementation SPRealTimeMessageQueue
+@implementation SPCRealTimeMessageQueue
 
 
 
@@ -46,14 +51,14 @@ static const int32_t kMessageBufferSize = 16384;
 
 
 
-- (instancetype)initWithResponseQueue:(SPMessageQueue *)responseQueue
+- (instancetype)initWithResponseQueue:(SPCMessageQueue *)responseQueue
 {
     self = [super init];
     if (!self) return nil;
     
     _responseQueue = responseQueue;
     
-    bool successful = SPRingBufferInit(&_messageBuffer, kMessageBufferSize);
+    bool successful = SPCRingBufferInit(&_messageBuffer, kMessageBufferSize);
     if (!successful) return nil;
     
     return self;
@@ -62,7 +67,7 @@ static const int32_t kMessageBufferSize = 16384;
 
 - (void)dealloc
 {
-    SPRingBufferDispose(&_messageBuffer);
+    SPCRingBufferDispose(&_messageBuffer);
 }
 
 
@@ -85,17 +90,17 @@ static void SPReleaseBlockHandler(void *refCon, size_t refConSize)
 //
 // Proccess messages posted on the queue.
 //
-void SPRealTimeMessageQueueProccessMessages(SPRealTimeMessageQueue *this)
+void SPCRealTimeMessageQueueProccessMessages(SPCRealTimeMessageQueue *this)
 {
     
     size_t availableBytes;
-    void **messagePtr = SPRingBufferGetForRead(&this->_messageBuffer, &availableBytes);
+    void **messagePtr = SPCRingBufferGetForRead(&this->_messageBuffer, &availableBytes);
     void *end = (char *)messagePtr + availableBytes;
     
     while ((void *)messagePtr < (void *)end) {
         
         __unsafe_unretained void (^executionBlock)(void) = (__bridge void (^)(void))(*messagePtr);
-        SPRingBufferMarkRead(&this->_messageBuffer, sizeof(void *));
+        SPCRingBufferMarkRead(&this->_messageBuffer, sizeof(void *));
     
         if (executionBlock) {
             
@@ -106,7 +111,7 @@ void SPRealTimeMessageQueueProccessMessages(SPRealTimeMessageQueue *this)
             // Release the block on the main thread.
             //
             void *executionBlockToRelease = (__bridge void *)(executionBlock);
-            SPMessageQueueDispatch(this->_responseQueue, SPReleaseBlockHandler, &executionBlockToRelease, sizeof(void *));
+            SPCMessageQueueDispatch(this->_responseQueue, SPReleaseBlockHandler, &executionBlockToRelease, sizeof(void *));
         }
         
         messagePtr++;
@@ -153,7 +158,7 @@ static void SPExecuteAndReleaseBlockHandler(void *refCon, size_t refConSize)
             
             // Dispatch the response block to the main thread.
             void *responseBlockPtrHolder = responseBlockPtr;
-            SPMessageQueueDispatch(_responseQueue, SPExecuteAndReleaseBlockHandler, &responseBlockPtrHolder, sizeof(void *));
+            SPCMessageQueueDispatch(_responseQueue, SPExecuteAndReleaseBlockHandler, &responseBlockPtrHolder, sizeof(void *));
             
         };
         void *executionBlockPtr = (void *)CFBridgingRetain(executionBlock);
@@ -162,18 +167,18 @@ static void SPExecuteAndReleaseBlockHandler(void *refCon, size_t refConSize)
         // Write the block to the real-time thread.
         //
         size_t availableBytes;
-        void **message = SPRingBufferGetForWrite(&_messageBuffer, &availableBytes);
+        void **message = SPCRingBufferGetForWrite(&_messageBuffer, &availableBytes);
         assert(availableBytes >= sizeof(void *));
         *message = executionBlockPtr;
         
-        SPRingBufferMarkWritten(&_messageBuffer, sizeof(void *));
+        SPCRingBufferMarkWritten(&_messageBuffer, sizeof(void *));
         
         //
         // If the response queue is not running, just do the exchange offline.
         //
         if (![self.responseQueue isRunning]) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                SPRealTimeMessageQueueProccessMessages(self);
+                SPCRealTimeMessageQueueProccessMessages(self);
                 [self.responseQueue flushQueue];
             });
         }
@@ -219,7 +224,7 @@ static const NSTimeInterval kThreadWaitTimeout              = 0.01;
     if (!finished) {
         DLog(@"Timed out while waiting for response from the real-time thread.");
         @synchronized (self) {
-            SPRealTimeMessageQueueProccessMessages(self);
+            SPCRealTimeMessageQueueProccessMessages(self);
             [self.responseQueue flushQueue];
         }
     }

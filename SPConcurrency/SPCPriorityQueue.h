@@ -1,13 +1,23 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPPriorityQueue.h
 //  SPPriorityQueue.h
 //  Peter Zhivkov.
+=======
+//  SPCPriorityQueue.h
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCPriorityQueue.h
 //
 //  Created by Peter Zhivkov on 09/02/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
 //
 
-#ifndef SpinTimer_SPPriorityQueue_h
-#define SpinTimer_SPPriorityQueue_h
+<<<<<<< HEAD:SPConcurrency/SPPriorityQueue.h
+#ifndef PZ_SPPriorityQueue_h
+#define PZ_SPPriorityQueue_h
+=======
+#ifndef PZ_SPCPriorityQueue_h
+#define PZ_SPCPriorityQueue_h
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCPriorityQueue.h
 
 #ifndef DEBUG
 #define NDEBUG
@@ -20,30 +30,30 @@
 
 
 
-struct _SPPriorityQueueNode;
+struct _SPCPriorityQueueNode;
 
-typedef struct _SPPriorityQueueNode SPPriorityQueueNode;
+typedef struct _SPCPriorityQueueNode SPCPriorityQueueNode;
 
 
-typedef uint64_t SPPriorityQueueKey;
+typedef uint64_t SPCPriorityQueueKey;
 
-#define ST_PQ_KEY_MAX LLONG_MAX
-#define ST_PQ_KEY_MIN LLONG_MIN
+#define SPC_PQ_KEY_MAX LLONG_MAX
+#define SPC_PQ_KEY_MIN LLONG_MIN
 
 
 
 /**
  *  A concurrent priority queue structure.
  */
-struct SPPriorityQueue {
-    SPPriorityQueueNode          *_head;
-    SPPriorityQueueNode          *_tail;
-    SPPriorityQueueNode *volatile _freeList;
-    void                         *_storage;
-    size_t                        _size;
+struct SPCPriorityQueue {
+    SPCPriorityQueueNode          *_head;
+    SPCPriorityQueueNode          *_tail;
+    SPCPriorityQueueNode *volatile _freeList;
+    void                          *_storage;
+    size_t                         _size;
 };
 
-typedef struct SPPriorityQueue SPPriorityQueue;
+typedef struct SPCPriorityQueue SPCPriorityQueue;
 
 
 
@@ -55,7 +65,7 @@ typedef struct SPPriorityQueue SPPriorityQueue;
  *
  *  @return true if successful; false, otherwise.
  */
-bool SPPriorityQueueInit(SPPriorityQueue *pqueue, size_t length);
+bool SPCPriorityQueueInit(SPCPriorityQueue *pqueue, size_t length);
 
 
 /**
@@ -63,7 +73,7 @@ bool SPPriorityQueueInit(SPPriorityQueue *pqueue, size_t length);
  *
  *  @param pqueue A pointer to a lock-free priority queue.
  */
-void SPPriorityQueueDispose(SPPriorityQueue *pqueue);
+void SPCPriorityQueueDispose(SPCPriorityQueue *pqueue);
 
 
 /**
@@ -75,7 +85,7 @@ void SPPriorityQueueDispose(SPPriorityQueue *pqueue);
  *
  *  @return true if successful.
  */
-bool SPPriorityQueueInsertElement(SPPriorityQueue *pqueue, SPPriorityQueueKey key, void *data);
+bool SPCPriorityQueueInsertElement(SPCPriorityQueue *pqueue, SPCPriorityQueueKey key, void *data);
 
 
 /**
@@ -86,7 +96,7 @@ bool SPPriorityQueueInsertElement(SPPriorityQueue *pqueue, SPPriorityQueueKey ke
  *
  *  @return The element with the minimum key value.
  */
-void *SPPriorityQueueExtractMinimumElement(SPPriorityQueue *pqueue, SPPriorityQueueKey *outKey);
+void *SPCPriorityQueueExtractMinimumElement(SPCPriorityQueue *pqueue, SPCPriorityQueueKey *outKey);
 
 
 /**
@@ -99,7 +109,7 @@ void *SPPriorityQueueExtractMinimumElement(SPPriorityQueue *pqueue, SPPriorityQu
  *
  *  @return The element with the minimum key.
  */
-void *SPPriorityQueuePeek_MPSC(SPPriorityQueue *pqueue, SPPriorityQueueKey *outputKey);
+void *SPCPriorityQueuePeek_MPSC(SPCPriorityQueue *pqueue, SPCPriorityQueueKey *outputKey);
 
 
 

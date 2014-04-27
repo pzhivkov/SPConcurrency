@@ -1,0 +1,4 @@
+command script import "~/Dev/SPConcurrency/SPConcurrency/Scripts/markable_ptr.py"
+script markable_ptr.markable_ptr_UnderlyingType = '_SPPriorityQueueNode'
+
+

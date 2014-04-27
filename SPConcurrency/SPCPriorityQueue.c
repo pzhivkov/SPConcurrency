@@ -1,12 +1,17 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPPriorityQueue.c
 //  SPPriorityQueue.c
 //  Peter Zhivkov.
+=======
+//  SPCPriorityQueue.c
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCPriorityQueue.c
 //
 //  Created by Peter Zhivkov on 09/02/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
 //
 
-#include "SPPriorityQueue.h"
+#include "SPCPriorityQueue.h"
 
 #ifndef DEBUG
 #define NDEBUG
@@ -21,8 +26,8 @@
 
 #include "SPUtils.h"
 
-#include "SPPrimitives.h"
-#include "SPMemoryReclamation.h"
+#include "SPCPrimitives.h"
+#include "SPCMemoryReclamation.h"
 
 
 static const size_t kProbabilityExponent = 1;  // A new level is added with probability (0.5)^kProbabilityExponent.
@@ -33,14 +38,14 @@ static const size_t kMaxLevels           = 6;  // Max number of levels that we'l
 /**
  *  A concurrent lock-free priority queue node.
  */
-struct _SPPriorityQueueNode {
-    volatile long                     _cmem_refCount_c;     // Markable in the lowest bit - claim flag.
-    volatile markable_ptr_t           _next_d[kMaxLevels];  // Markable in the lowest bit - del flag.
-    SPPriorityQueueNode     *volatile _rPrev;               // Contains a retained pointer.
-    SPPriorityQueueKey                _key;
-    void                    *volatile _data_d;              // Markable in the lowest bit - del flag.
-    size_t                            _height;
-    volatile size_t                   _validToHeight;
+struct _SPCPriorityQueueNode {
+    volatile long                      _cmem_refCount_c;     // Markable in the lowest bit - claim flag.
+    volatile markable_ptr_t            _next_d[kMaxLevels];  // Markable in the lowest bit - del flag.
+    SPCPriorityQueueNode     *volatile _rPrev;               // Contains a retained pointer.
+    SPCPriorityQueueKey                _key;
+    void                     *volatile _data_d;              // Markable in the lowest bit - del flag.
+    size_t                             _height;
+    volatile size_t                    _validToHeight;
 };
 
 
@@ -72,9 +77,9 @@ struct _SPPriorityQueueNode {
  */
 
 
-static SPPriorityQueueNode *scanForKey_r(SPPriorityQueue *pqueue, SPPriorityQueueNode **rStartingNodePtr, size_t level, SPPriorityQueueKey key);
-static SPPriorityQueueNode *helpDeleteAndReleaseNode_r(SPPriorityQueue *pqueue, SPPriorityQueueNode *rNodeToDelete, size_t level);
-static void unlinkNodeAtLevel(SPPriorityQueue *pqueue, SPPriorityQueueNode *rNodeToUnlink, SPPriorityQueueNode **rPrevPtr, size_t level);
+static SPCPriorityQueueNode *scanForKey_r(SPCPriorityQueue *pqueue, SPCPriorityQueueNode **rStartingNodePtr, size_t level, SPCPriorityQueueKey key);
+static SPCPriorityQueueNode *helpDeleteAndReleaseNode_r(SPCPriorityQueue *pqueue, SPCPriorityQueueNode *rNodeToDelete, size_t level);
+static void unlinkNodeAtLevel(SPCPriorityQueue *pqueue, SPCPriorityQueueNode *rNodeToUnlink, SPCPriorityQueueNode **rPrevPtr, size_t level);
 
 
 
@@ -89,9 +94,9 @@ static void unlinkNodeAtLevel(SPPriorityQueue *pqueue, SPPriorityQueueNode *rNod
  *
  *  @return true if retained; false, otherwise.
  */
-static FORCE_INLINE bool isNodeRetained(SPPriorityQueueNode *node)
+static FORCE_INLINE bool isNodeRetained(SPCPriorityQueueNode *node)
 {
-    return cmem_isRetained(node, offsetof(SPPriorityQueueNode, _cmem_refCount_c));
+    return cmem_isRetained(node, offsetof(SPCPriorityQueueNode, _cmem_refCount_c));
 }
 
 
@@ -104,13 +109,13 @@ static FORCE_INLINE bool isNodeRetained(SPPriorityQueueNode *node)
  *
  *  @return A newly created node with the requested key and data.
  */
-static FORCE_INLINE SPPriorityQueueNode *createNode(SPPriorityQueue *pqueue, size_t height, SPPriorityQueueKey key, void *data)
+static FORCE_INLINE SPCPriorityQueueNode *createNode(SPCPriorityQueue *pqueue, size_t height, SPCPriorityQueueKey key, void *data)
 {
     assert(pqueue);
 
-    SPPriorityQueueNode *newNode = cmem_allocNode((void *volatile *)(&pqueue->_freeList),
-                                                  offsetof(SPPriorityQueueNode, _cmem_refCount_c),
-                                                  offsetof(SPPriorityQueueNode, _next_d));
+    SPCPriorityQueueNode *newNode = cmem_allocNode((void *volatile *)(&pqueue->_freeList),
+                                                   offsetof(SPCPriorityQueueNode, _cmem_refCount_c),
+                                                   offsetof(SPCPriorityQueueNode, _next_d));
     if (!newNode)
         return NULL;
     
@@ -138,11 +143,11 @@ static FORCE_INLINE SPPriorityQueueNode *createNode(SPPriorityQueue *pqueue, siz
  *
  *  @return The retained node.
  */
-static FORCE_INLINE SPPriorityQueueNode *retainNode(SPPriorityQueueNode *node)
+static FORCE_INLINE SPCPriorityQueueNode *retainNode(SPCPriorityQueueNode *node)
 {
     assert(isNodeRetained(node));
     
-    cmem_retainNode(node, offsetof(SPPriorityQueueNode, _cmem_refCount_c));
+    cmem_retainNode(node, offsetof(SPCPriorityQueueNode, _cmem_refCount_c));
     
     return node;
 }
@@ -154,15 +159,15 @@ static FORCE_INLINE SPPriorityQueueNode *retainNode(SPPriorityQueueNode *node)
  *  @param pqueue A pointer to a priority queue.
  *  @param node   A pointer to the node to release.
  */
-static FORCE_INLINE void releaseNode(SPPriorityQueue *pqueue, SPPriorityQueueNode *node)
+static FORCE_INLINE void releaseNode(SPCPriorityQueue *pqueue, SPCPriorityQueueNode *node)
 {
     assert(isNodeRetained(node));
     
     return cmem_releaseNode(node,
-                            offsetof(SPPriorityQueueNode, _cmem_refCount_c),
-                            offsetof(SPPriorityQueueNode, _next_d),
+                            offsetof(SPCPriorityQueueNode, _cmem_refCount_c),
+                            offsetof(SPCPriorityQueueNode, _next_d),
                             kMaxLevels,
-                            offsetof(SPPriorityQueueNode, _rPrev),
+                            offsetof(SPCPriorityQueueNode, _rPrev),
                             (void *volatile *)(&pqueue->_freeList));
 }
 
@@ -175,7 +180,7 @@ static FORCE_INLINE void releaseNode(SPPriorityQueue *pqueue, SPPriorityQueueNod
  *
  *  @return A regular pointer to a retained node.
  */
-static FORCE_INLINE SPPriorityQueueNode *readAndRetainNode_d(SPPriorityQueue *pqueue, volatile markable_ptr_t *node_d_Ptr)
+static FORCE_INLINE SPCPriorityQueueNode *readAndRetainNode_d(SPCPriorityQueue *pqueue, volatile markable_ptr_t *node_d_Ptr)
 {
     assert(pqueue);
     assert(node_d_Ptr);
@@ -187,10 +192,10 @@ static FORCE_INLINE SPPriorityQueueNode *readAndRetainNode_d(SPPriorityQueue *pq
         if (isMarked_m(node_d))
             return NULL;
         
-        SPPriorityQueueNode *node = toPtr_m(node_d);
+        SPCPriorityQueueNode *node = toPtr_m(node_d);
         assert(node);
 
-        cmem_retainNode(node, offsetof(SPPriorityQueueNode, _cmem_refCount_c));
+        cmem_retainNode(node, offsetof(SPCPriorityQueueNode, _cmem_refCount_c));
         SPC_MEMORY_BARRIER_FULL(); // Synchronize a load of the node ptr and a store in the node's reference count simultaneously.
 
         if (node_d == (markable_ptr_t)(SPC_ATOMIC_LOAD(node_d_Ptr))) {
@@ -200,10 +205,10 @@ static FORCE_INLINE SPPriorityQueueNode *readAndRetainNode_d(SPPriorityQueue *pq
         } else {
             // This should never need to use the free list unless we preempted a reclaim.
             cmem_releaseNode(node,
-                             offsetof(SPPriorityQueueNode, _cmem_refCount_c),
-                             offsetof(SPPriorityQueueNode, _next_d),
+                             offsetof(SPCPriorityQueueNode, _cmem_refCount_c),
+                             offsetof(SPCPriorityQueueNode, _next_d),
                              kMaxLevels,
-                             offsetof(SPPriorityQueueNode, _rPrev),
+                             offsetof(SPCPriorityQueueNode, _rPrev),
                              (void *volatile *)(&pqueue->_freeList));
         }
     }
@@ -223,7 +228,7 @@ static FORCE_INLINE SPPriorityQueueNode *readAndRetainNode_d(SPPriorityQueue *pq
  *
  *  @return true if successful; false, otherwise.
  */
-bool SPPriorityQueueInit(SPPriorityQueue *pqueue, size_t length)
+bool SPCPriorityQueueInit(SPCPriorityQueue *pqueue, size_t length)
 {
     assert(pqueue);
     
@@ -232,11 +237,11 @@ bool SPPriorityQueueInit(SPPriorityQueue *pqueue, size_t length)
     // (Reserve 2 nodes for head and tail.)
     //
     size_t queueLength = length + 2;
-    pqueue->_storage = calloc(queueLength, sizeof(SPPriorityQueueNode));
+    pqueue->_storage = calloc(queueLength, sizeof(SPCPriorityQueueNode));
     if (!pqueue->_storage) {
         STD_OUTPUT_ERROR("priority queue allocation", "FAILURE");
         
-        SPPriorityQueueDispose(pqueue);
+        SPCPriorityQueueDispose(pqueue);
         return false;
     }
     
@@ -246,17 +251,17 @@ bool SPPriorityQueueInit(SPPriorityQueue *pqueue, size_t length)
     // Prepare the free list for the custom lock-free memory allocator.
     //
     cmem_init((void *volatile *)(&pqueue->_freeList),
-              offsetof(SPPriorityQueueNode, _cmem_refCount_c),
-              offsetof(SPPriorityQueueNode, _next_d),
-              sizeof(SPPriorityQueueNode),
+              offsetof(SPCPriorityQueueNode, _cmem_refCount_c),
+              offsetof(SPCPriorityQueueNode, _next_d),
+              sizeof(SPCPriorityQueueNode),
               pqueue->_storage,
               queueLength);
     
     //
     // Prepare the queue.
     //
-    pqueue->_head = createNode(pqueue, kMaxLevels, ST_PQ_KEY_MIN, NULL);
-    pqueue->_tail = createNode(pqueue, kMaxLevels, ST_PQ_KEY_MAX, NULL);
+    pqueue->_head = createNode(pqueue, kMaxLevels, SPC_PQ_KEY_MIN, NULL);
+    pqueue->_tail = createNode(pqueue, kMaxLevels, SPC_PQ_KEY_MAX, NULL);
     
     pqueue->_head->_validToHeight = kMaxLevels;
     pqueue->_tail->_validToHeight = kMaxLevels;
@@ -278,14 +283,14 @@ bool SPPriorityQueueInit(SPPriorityQueue *pqueue, size_t length)
  *
  *  @param pqueue A pointer to a lock-free priority queue.
  */
-void SPPriorityQueueDispose(SPPriorityQueue *pqueue)
+void SPCPriorityQueueDispose(SPCPriorityQueue *pqueue)
 {
     // Prevent old changes from being observed happening after the queue release.
     SPC_MEMORY_BARRIER_STORE();
     
     free(pqueue->_storage);
     
-    memset(pqueue, 0, sizeof(SPPriorityQueue));
+    memset(pqueue, 0, sizeof(SPCPriorityQueue));
 }
 
 
@@ -308,7 +313,7 @@ void SPPriorityQueueDispose(SPPriorityQueue *pqueue)
  *
  *  @return The next node (retained).
  */
-static SPPriorityQueueNode *readNextNode_r(SPPriorityQueue *pqueue, SPPriorityQueueNode **rNodePtr, size_t level)
+static SPCPriorityQueueNode *readNextNode_r(SPCPriorityQueue *pqueue, SPCPriorityQueueNode **rNodePtr, size_t level)
 {
     assert(pqueue);
     assert(rNodePtr);
@@ -317,7 +322,7 @@ static SPPriorityQueueNode *readNextNode_r(SPPriorityQueue *pqueue, SPPriorityQu
     if (isMarked_m((markable_ptr_t)(SPC_ATOMIC_LOAD(&(*rNodePtr)->_data_d))))
         *rNodePtr = helpDeleteAndReleaseNode_r(pqueue, *rNodePtr, level);
     
-    SPPriorityQueueNode *rNextNode = readAndRetainNode_d(pqueue, &(*rNodePtr)->_next_d[level]);
+    SPCPriorityQueueNode *rNextNode = readAndRetainNode_d(pqueue, &(*rNodePtr)->_next_d[level]);
     while (!rNextNode) {
         *rNodePtr = helpDeleteAndReleaseNode_r(pqueue, *rNodePtr, level);
         rNextNode = readAndRetainNode_d(pqueue, &(*rNodePtr)->_next_d[level]);
@@ -347,12 +352,12 @@ static SPPriorityQueueNode *readNextNode_r(SPPriorityQueue *pqueue, SPPriorityQu
  *
  *  @return A node with the same or higher key than the given one (retained).
  */
-static SPPriorityQueueNode *scanForKey_r(SPPriorityQueue *pqueue, SPPriorityQueueNode **rStartingNodePtr, size_t level, SPPriorityQueueKey key)
+static SPCPriorityQueueNode *scanForKey_r(SPCPriorityQueue *pqueue, SPCPriorityQueueNode **rStartingNodePtr, size_t level, SPCPriorityQueueKey key)
 {
     assert(rStartingNodePtr);
     assert(isNodeRetained(*rStartingNodePtr));
   
-    SPPriorityQueueNode *rNextNode = readNextNode_r(pqueue, rStartingNodePtr, level);
+    SPCPriorityQueueNode *rNextNode = readNextNode_r(pqueue, rStartingNodePtr, level);
     while (rNextNode->_key < key) { // We can check if we've reached the tail, but since the tail
                                     // always has key ST_PQ_MAX, this is not necessary.
         releaseNode(pqueue, *rStartingNodePtr);
@@ -437,7 +442,7 @@ static FORCE_INLINE size_t chooseRandomHeight(size_t maxHeight)
  *
  *  @return true if successful.
  */
-bool SPPriorityQueueInsertElement(SPPriorityQueue *pqueue, SPPriorityQueueKey key, void *data)
+bool SPCPriorityQueueInsertElement(SPCPriorityQueue *pqueue, SPCPriorityQueueKey key, void *data)
 {
     assert(pqueue);
     
@@ -450,7 +455,7 @@ bool SPPriorityQueueInsertElement(SPPriorityQueue *pqueue, SPPriorityQueueKey ke
     //
     size_t newNodeHeight = chooseRandomHeight(pqueue->_head->_height);
     
-    SPPriorityQueueNode *rNewNode = createNode(pqueue, newNodeHeight, key, data);
+    SPCPriorityQueueNode *rNewNode = createNode(pqueue, newNodeHeight, key, data);
     if (!rNewNode)
         return false;
     
@@ -463,13 +468,13 @@ bool SPPriorityQueueInsertElement(SPPriorityQueue *pqueue, SPPriorityQueueKey ke
     // until the correct node is found. When going down one level, the last node traversed on that level
     // is remembered for later use (this is where we insert the new node at that level).
     //
-    SPPriorityQueueNode *rSavedNodes[kMaxLevels];
-    memset(rSavedNodes, 0, kMaxLevels * sizeof(SPPriorityQueueNode *));
+    SPCPriorityQueueNode *rSavedNodes[kMaxLevels];
+    memset(rSavedNodes, 0, kMaxLevels * sizeof(SPCPriorityQueueNode *));
     
-    SPPriorityQueueNode *rInsertionPoint = retainNode(pqueue->_head);
+    SPCPriorityQueueNode *rInsertionPoint = retainNode(pqueue->_head);
     for (int iterLevel = (signed int)(pqueue->_head->_height - 1); iterLevel >= 1; --iterLevel) {
 
-        SPPriorityQueueNode *rTemp = scanForKey_r(pqueue, &rInsertionPoint, iterLevel, key);
+        SPCPriorityQueueNode *rTemp = scanForKey_r(pqueue, &rInsertionPoint, iterLevel, key);
         releaseNode(pqueue, rTemp);
         
         if (iterLevel < newNodeHeight)
@@ -481,7 +486,7 @@ bool SPPriorityQueueInsertElement(SPPriorityQueue *pqueue, SPPriorityQueueKey ke
     //
     for (spc_backoff_t backoffCounter = SPC_BACKOFF_INIT;;) {
   
-        SPPriorityQueueNode *rNextNode = scanForKey_r(pqueue, &rInsertionPoint, 0, key);
+        SPCPriorityQueueNode *rNextNode = scanForKey_r(pqueue, &rInsertionPoint, 0, key);
   
         // If there exists a node with the same priority as the new node, change the value of the old node atomically.
         //
@@ -544,7 +549,7 @@ bool SPPriorityQueueInsertElement(SPPriorityQueue *pqueue, SPPriorityQueueKey ke
         
         rInsertionPoint = rSavedNodes[iterLevel];
         for (spc_backoff_t backoffCounter = SPC_BACKOFF_INIT;;) {
-            SPPriorityQueueNode *rNextNode = scanForKey_r(pqueue, &rInsertionPoint, iterLevel, key);
+            SPCPriorityQueueNode *rNextNode = scanForKey_r(pqueue, &rInsertionPoint, iterLevel, key);
             
             SPC_ATOMIC_STORE(&rNewNode->_next_d[iterLevel], toMarkable(rNextNode, false));
             SPC_MEMORY_BARRIER_STORE(); // Update of _next_d[iterLevel] of the new node is observed before insertion point change.
@@ -619,22 +624,22 @@ bool SPPriorityQueueInsertElement(SPPriorityQueue *pqueue, SPPriorityQueueKey ke
  *
  *  @return true if unlinked; false, otherwise.
  */
-static FORCE_INLINE bool isNodeUnlinkedAtLevel(SPPriorityQueue *pqueue, SPPriorityQueueNode *rNodeToCheck, SPPriorityQueueNode **rPrevPtr, size_t level)
+static FORCE_INLINE bool isNodeUnlinkedAtLevel(SPCPriorityQueue *pqueue, SPCPriorityQueueNode *rNodeToCheck, SPCPriorityQueueNode **rPrevPtr, size_t level)
 {
     assert(rNodeToCheck);
     assert(rPrevPtr && *rPrevPtr);
     assert(isNodeRetained(*rPrevPtr));
     assert(isNodeRetained(rNodeToCheck));
     
-    const SPPriorityQueueKey key = rNodeToCheck->_key;
+    const SPCPriorityQueueKey key = rNodeToCheck->_key;
     
-    SPPriorityQueueNode *rNextNode = scanForKey_r(pqueue, rPrevPtr, level, key);
+    SPCPriorityQueueNode *rNextNode = scanForKey_r(pqueue, rPrevPtr, level, key);
     if (rNextNode != rNodeToCheck && rNextNode->_key == key) {
         //
         // We encountered a duplicate entry with the same key.
         // Try to go forward and see if our node is still somewhere behind.
         //
-        SPPriorityQueueNode *rTempPrev = retainNode(*rPrevPtr);
+        SPCPriorityQueueNode *rTempPrev = retainNode(*rPrevPtr);
         
         rNextNode = readNextNode_r(pqueue, &rTempPrev, level);
         while (rNextNode->_key == key && rNextNode != rNodeToCheck) {
@@ -664,7 +669,7 @@ static FORCE_INLINE bool isNodeUnlinkedAtLevel(SPPriorityQueue *pqueue, SPPriori
  *  @param rPrevPtr     A retained pointer to a prev pointer.
  *  @param level        A given level.
  */
-static void unlinkNodeAtLevel(SPPriorityQueue *pqueue, SPPriorityQueueNode *rNodeToUnlink, SPPriorityQueueNode **rPrevPtr, size_t level)
+static void unlinkNodeAtLevel(SPCPriorityQueue *pqueue, SPCPriorityQueueNode *rNodeToUnlink, SPCPriorityQueueNode **rPrevPtr, size_t level)
 {
     assert(pqueue);
     assert(rNodeToUnlink);
@@ -715,7 +720,7 @@ static void unlinkNodeAtLevel(SPPriorityQueue *pqueue, SPPriorityQueueNode *rNod
  *
  *  @return The correct previous node of the given flagged node (retained).
  */
-static SPPriorityQueueNode *helpDeleteAndReleaseNode_r(SPPriorityQueue *pqueue, SPPriorityQueueNode *rNodeToDelete, size_t level)
+static SPCPriorityQueueNode *helpDeleteAndReleaseNode_r(SPCPriorityQueue *pqueue, SPCPriorityQueueNode *rNodeToDelete, size_t level)
 {
     assert(pqueue);
     assert(rNodeToDelete);
@@ -739,13 +744,13 @@ static SPPriorityQueueNode *helpDeleteAndReleaseNode_r(SPPriorityQueue *pqueue, 
     // Check if prev node is valid for deletion.
     // If not, then search for the correct prev node.
     //
-    SPPriorityQueueNode *rPrev = (void *)(SPC_ATOMIC_LOAD(&rNodeToDelete->_rPrev));
+    SPCPriorityQueueNode *rPrev = (void *)(SPC_ATOMIC_LOAD(&rNodeToDelete->_rPrev));
     if (!rPrev || level >= (size_t)(SPC_ATOMIC_LOAD(&rPrev->_validToHeight))) {
         rPrev = retainNode(pqueue->_head);
 
         for (int iterLevel = (signed)(pqueue->_head->_height - 1); iterLevel >= (signed)(level); --iterLevel) {
             
-            SPPriorityQueueNode *rTmpNode = scanForKey_r(pqueue, &rPrev, iterLevel, rNodeToDelete->_key);
+            SPCPriorityQueueNode *rTmpNode = scanForKey_r(pqueue, &rPrev, iterLevel, rNodeToDelete->_key);
             releaseNode(pqueue, rTmpNode);
         }
     } else
@@ -769,18 +774,18 @@ static SPPriorityQueueNode *helpDeleteAndReleaseNode_r(SPPriorityQueue *pqueue, 
  *
  *  @return The element with the minimum key value.
  */
-void *SPPriorityQueueExtractMinimumElement(SPPriorityQueue *pqueue, SPPriorityQueueKey *outKey)
+void *SPCPriorityQueueExtractMinimumElement(SPCPriorityQueue *pqueue, SPCPriorityQueueKey *outKey)
 {
     assert(pqueue);
     
     markable_ptr_t     retData_d = 0;
-    SPPriorityQueueKey retKey;
+    SPCPriorityQueueKey retKey;
     
     //
     // Start from the head and get the first node not marked for deletion.
     //
-    SPPriorityQueueNode *rFirstNode = 0;
-    for (SPPriorityQueueNode *rPrev = retainNode(pqueue->_head);;) {
+    SPCPriorityQueueNode *rFirstNode = 0;
+    for (SPCPriorityQueueNode *rPrev = retainNode(pqueue->_head);;) {
         
         rFirstNode = readNextNode_r(pqueue, &rPrev, 0);
         if (rFirstNode == pqueue->_tail) { // The queue is empty.
@@ -838,7 +843,7 @@ void *SPPriorityQueueExtractMinimumElement(SPPriorityQueue *pqueue, SPPriorityQu
     //
     // Unlink the node and then delete it.
     //
-    SPPriorityQueueNode *rPrev = retainNode(pqueue->_head);
+    SPCPriorityQueueNode *rPrev = retainNode(pqueue->_head);
     for (int iterLevel = (signed)(rFirstNode->_height - 1); iterLevel >= 0; --iterLevel)
         unlinkNodeAtLevel(pqueue, rFirstNode, &rPrev, iterLevel);
     releaseNode(pqueue, rPrev);
@@ -871,13 +876,13 @@ void *SPPriorityQueueExtractMinimumElement(SPPriorityQueue *pqueue, SPPriorityQu
  *
  *  @return The element with the minimum key.
  */
-void *SPPriorityQueuePeek_MPSC(SPPriorityQueue *pqueue, SPPriorityQueueKey *outputKey)
+void *SPCPriorityQueuePeek_MPSC(SPCPriorityQueue *pqueue, SPCPriorityQueueKey *outputKey)
 {
     assert(pqueue);
     
     // Get the first node.
     //
-    SPPriorityQueueNode *firstNode = toPtr_m((markable_ptr_t)(SPC_ATOMIC_LOAD(&pqueue->_head->_next_d[0])));
+    SPCPriorityQueueNode *firstNode = toPtr_m((markable_ptr_t)(SPC_ATOMIC_LOAD(&pqueue->_head->_next_d[0])));
     if (firstNode == pqueue->_tail) // The queue is empty.
         return NULL;
     

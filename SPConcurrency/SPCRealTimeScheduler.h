@@ -1,6 +1,11 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPRealTimeScheduler.h
 //  SPRealTimeScheduler.h
 //  Peter Zhivkov.
+=======
+//  SPCRealTimeScheduler.h
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRealTimeScheduler.h
 //
 //  Created by Peter Zhivkov on 27/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
@@ -9,7 +14,7 @@
 #import <Foundation/Foundation.h>
 
 
-@class SPMessageQueue;
+@class SPCMessageQueue;
 
 
 
@@ -26,9 +31,9 @@
  *
  *  @return A status code
  */
-OSStatus SPRealTimeSchedulerInvokeCallback(void   *inRTSchedulerPtr,
-                                           UInt64  inIntervalStart,
-                                           UInt64  inIntervalEnd);
+OSStatus SPCRealTimeSchedulerInvokeCallback(void   *inRTSchedulerPtr,
+                                            UInt64  inIntervalStart,
+                                            UInt64  inIntervalEnd);
 
 /**
  *  Scheduler block.
@@ -41,13 +46,13 @@ OSStatus SPRealTimeSchedulerInvokeCallback(void   *inRTSchedulerPtr,
  *  @param isLastRepetition A flag that notifies the callee that this will be the last call,
  *                          giving them the chance to release any resources held on the heap.
  */
-typedef void (^SPRealTimeSchedulerBlock)(UInt64 inIntervalStart, UInt64 inTimeOffset, BOOL isLastRepetition);
+typedef void (^SPCRealTimeSchedulerBlock)(UInt64 inIntervalStart, UInt64 inTimeOffset, BOOL isLastRepetition);
 
 
 /**
  *  A real-time scheduler providing time-based event scheduling.
  */
-@interface SPRealTimeScheduler : NSObject
+@interface SPCRealTimeScheduler : NSObject
 
 
 /**
@@ -67,7 +72,7 @@ typedef void (^SPRealTimeSchedulerBlock)(UInt64 inIntervalStart, UInt64 inTimeOf
  *
  *  @return The scheduler if successful.
  */
-- (instancetype)initWithResponseQueue:(SPMessageQueue *)responseQueue;
+- (instancetype)initWithResponseQueue:(SPCMessageQueue *)responseQueue;
 
 
 /**
@@ -78,7 +83,7 @@ typedef void (^SPRealTimeSchedulerBlock)(UInt64 inIntervalStart, UInt64 inTimeOf
  *
  *  @return The scheduler if successful.
  */
-- (instancetype)initWithSize:(size_t)queueSize responseQueue:(SPMessageQueue *)responseQueue;
+- (instancetype)initWithSize:(size_t)queueSize responseQueue:(SPCMessageQueue *)responseQueue;
 
 
 /**
@@ -97,7 +102,7 @@ typedef void (^SPRealTimeSchedulerBlock)(UInt64 inIntervalStart, UInt64 inTimeOf
  *  @return YES if successful.
  */
 - (BOOL)scheduleBlockAfterTime:(NSTimeInterval)relativeTime
-                         block:(SPRealTimeSchedulerBlock)block
+                         block:(SPCRealTimeSchedulerBlock)block
                  responseBlock:(void (^)(void))responseBlock;
 
 /**
@@ -114,7 +119,7 @@ typedef void (^SPRealTimeSchedulerBlock)(UInt64 inIntervalStart, UInt64 inTimeOf
 - (BOOL)scheduleBlockAfterTime:(NSTimeInterval)relativeTime
                    repetitions:(unsigned long)repetitions
              delayBeforeRepeat:(NSTimeInterval)repetitionWaitTime
-                         block:(SPRealTimeSchedulerBlock)block
+                         block:(SPCRealTimeSchedulerBlock)block
                  responseBlock:(void (^)(void))responseBlock;
 
 

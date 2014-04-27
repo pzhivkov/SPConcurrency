@@ -1,6 +1,11 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPMessageQueue.h
 //  SPMessageQueue.h
 //  Peter Zhivkov.
+=======
+//  SPCMessageQueue.h
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCMessageQueue.h
 //
 //  Created by Peter Zhivkov on 06/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
@@ -15,7 +20,7 @@
 /**
  *  A lock-less message queue for transmitting and running execution blocks on the main thread.
  */
-@interface SPMessageQueue : NSObject
+@interface SPCMessageQueue : NSObject
 
 
 + (instancetype)new   __attribute__((unavailable("new not available, call designated initializer instead")));
@@ -60,7 +65,7 @@
 /**
  *  A message handler function to be excuted on the main thread.
  */
-typedef void (*SPMessageHandler)(void *refCon, size_t refConSize);
+typedef void (*SPCMessageHandler)(void *refCon, size_t refConSize);
 
 /**
  *  Dispatch a message to a lock-free message queue.
@@ -70,7 +75,7 @@ typedef void (*SPMessageHandler)(void *refCon, size_t refConSize);
  *  @param userInfo       A user info.
  *  @param userInfoLength The user info length.
  */
-void SPMessageQueueDispatch(SPMessageQueue *messageQueue, SPMessageHandler handler, void *userInfo, size_t userInfoLength);
+void SPCMessageQueueDispatch(SPCMessageQueue *messageQueue, SPCMessageHandler handler, void *userInfo, size_t userInfoLength);
 
 
 

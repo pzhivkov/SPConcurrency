@@ -1,15 +1,20 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPRealTimeScheduler.m
 //  SPRealTimeScheduler.m
 //  Peter Zhivkov.
+=======
+//  SPCRealTimeScheduler.m
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRealTimeScheduler.m
 //
 //  Created by Peter Zhivkov on 27/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
 //
 
-#import "SPRealTimeScheduler.h"
+#import "SPCRealTimeScheduler.h"
 
-#import "SPMessageQueue.h"
-#import "SPPriorityQueue.h"
+#import "SPCMessageQueue.h"
+#import "SPCPriorityQueue.h"
 
 
 
@@ -33,18 +38,18 @@ typedef struct sched_control_data_t sched_control_data_t;
 
 
 
-@interface SPRealTimeScheduler ()
+@interface SPCRealTimeScheduler ()
 
-@property (nonatomic)       SPPriorityQueue  schedulerQueue;
-@property (nonatomic, weak) SPMessageQueue  *responseQueue;
-@property (nonatomic)       size_t           queueSize;
+@property (nonatomic)       SPCPriorityQueue  schedulerQueue;
+@property (nonatomic, weak) SPCMessageQueue  *responseQueue;
+@property (nonatomic)       size_t            queueSize;
 
 @end
 
 
 
 
-@implementation SPRealTimeScheduler
+@implementation SPCRealTimeScheduler
 
 
 
@@ -52,7 +57,7 @@ typedef struct sched_control_data_t sched_control_data_t;
 
 
 
-- (id)initWithResponseQueue:(SPMessageQueue *)responseQueue
+- (id)initWithResponseQueue:(SPCMessageQueue *)responseQueue
 {
     return [self initWithSize:kDefaultSchedulerQueueSize responseQueue:responseQueue];
 }
@@ -64,7 +69,7 @@ typedef struct sched_control_data_t sched_control_data_t;
  *  @param queueSize Determines the maximum number of blocks that can be scheduled.
  *  @param responseQueue A corresponding message queue on the main thread to do memory handling and execute response callbacks.
  */
-- (instancetype)initWithSize:(size_t)queueSize responseQueue:(SPMessageQueue *)responseQueue;
+- (instancetype)initWithSize:(size_t)queueSize responseQueue:(SPCMessageQueue *)responseQueue;
 {
     self = [super init];
     if (!self) return nil;
@@ -73,7 +78,7 @@ typedef struct sched_control_data_t sched_control_data_t;
     _responseQueue = responseQueue;
     _queueSize     = queueSize;
     
-    SPPriorityQueueInit(&_schedulerQueue, queueSize);
+    SPCPriorityQueueInit(&_schedulerQueue, queueSize);
     
     return self;
 }
@@ -84,14 +89,14 @@ typedef struct sched_control_data_t sched_control_data_t;
  */
 - (void)reset
 {
-    SPPriorityQueueDispose(&_schedulerQueue);
-    SPPriorityQueueInit(&_schedulerQueue, _queueSize);
+    SPCPriorityQueueDispose(&_schedulerQueue);
+    SPCPriorityQueueInit(&_schedulerQueue, _queueSize);
 }
 
 
 - (void)dealloc
 {
-    SPPriorityQueueDispose(&_schedulerQueue);
+    SPCPriorityQueueDispose(&_schedulerQueue);
 }
 
 
@@ -136,7 +141,7 @@ static void SPExecuteAndReleaseBlockHandler(void *refCon, size_t refConSize)
  *  @return YES if successful.
  */
 - (BOOL)scheduleBlockAfterTime:(NSTimeInterval)relativeTime
-                         block:(SPRealTimeSchedulerBlock)block
+                         block:(SPCRealTimeSchedulerBlock)block
                  responseBlock:(void (^)(void))responseBlock
 {
     return [self scheduleBlockAfterTime:relativeTime
@@ -161,7 +166,7 @@ static void SPExecuteAndReleaseBlockHandler(void *refCon, size_t refConSize)
 - (BOOL)scheduleBlockAfterTime:(NSTimeInterval)relativeTime
                    repetitions:(unsigned long)repetitions
              delayBeforeRepeat:(NSTimeInterval)repetitionWaitTime
-                         block:(SPRealTimeSchedulerBlock)block
+                         block:(SPCRealTimeSchedulerBlock)block
                  responseBlock:(void (^)(void))responseBlock
 {
     if (repetitions == 0) {
@@ -169,7 +174,7 @@ static void SPExecuteAndReleaseBlockHandler(void *refCon, size_t refConSize)
         return YES;
     }
     
-    NSAssert(sizeof(SPPriorityQueueKey) == sizeof(UInt64),
+    NSAssert(sizeof(SPCPriorityQueueKey) == sizeof(UInt64),
              @"Scheduler timing information can't be encoded as a priority queue key.");
     
     //
@@ -183,7 +188,7 @@ static void SPExecuteAndReleaseBlockHandler(void *refCon, size_t refConSize)
     //
     // Construct the block to execute on the real-time thread.
     //
-    SPRealTimeSchedulerBlock executionBlock = ^(UInt64 inIntervalStart, UInt64 inTimeOffset, BOOL isLastRepetition) {
+    SPCRealTimeSchedulerBlock executionBlock = ^(UInt64 inIntervalStart, UInt64 inTimeOffset, BOOL isLastRepetition) {
         
         // Execute the main block.
         if (block)
@@ -191,7 +196,7 @@ static void SPExecuteAndReleaseBlockHandler(void *refCon, size_t refConSize)
         
         // Dispatch the response block to the main thread.
         void *responseBlockPtrHolder = responseBlockPtr;
-        SPMessageQueueDispatch(_responseQueue,
+        SPCMessageQueueDispatch(_responseQueue,
                                isLastRepetition ? SPExecuteAndReleaseBlockHandler : SPExecuteBlockHandler,
                                &responseBlockPtrHolder,
                                sizeof(void *));
@@ -208,10 +213,10 @@ static void SPExecuteAndReleaseBlockHandler(void *refCon, size_t refConSize)
     //
     // Put the block on the scheduler queue.
     //
-    SPPriorityQueueKey  key  = relativeTime * (1.0 / SPUMachHostTicksToSeconds());
-    void               *data = controlData;
+    SPCPriorityQueueKey  key  = relativeTime * (1.0 / SPUMachHostTicksToSeconds());
+    void                *data = controlData;
     
-    BOOL scheduled = SPPriorityQueueInsertElement(&_schedulerQueue, key, data);
+    BOOL scheduled = SPCPriorityQueueInsertElement(&_schedulerQueue, key, data);
     if (!scheduled) {
         DLog(@"Failed to schedule block");
         
@@ -258,11 +263,11 @@ static void SPReleaseSchedulerControlDataHandler(void *refCon, size_t refConSize
  *
  *  @return A status code
  */
-OSStatus SPRealTimeSchedulerInvokeCallback(void   *inRTSchedulerPtr,
+OSStatus SPCRealTimeSchedulerInvokeCallback(void   *inRTSchedulerPtr,
                                            UInt64  inIntervalStart,
                                            UInt64  inIntervalEnd)
 {
-    SPRealTimeScheduler *this = (__bridge SPRealTimeScheduler *)inRTSchedulerPtr;
+    SPCRealTimeScheduler *this = (__bridge SPCRealTimeScheduler *)inRTSchedulerPtr;
     assert(this);
     
     //
@@ -272,14 +277,14 @@ OSStatus SPRealTimeSchedulerInvokeCallback(void   *inRTSchedulerPtr,
     UInt64 relativeEndTime = inIntervalEnd - this->_hostBaseTime;
     
     UInt64 relativeTime = 0;
-    void  *data         = SPPriorityQueuePeek_MPSC(&this->_schedulerQueue, &relativeTime);
+    void  *data         = SPCPriorityQueuePeek_MPSC(&this->_schedulerQueue, &relativeTime);
     
     while (data && relativeTime <= relativeEndTime) {
         
         //
         // Extract the control data from the scheduler queue.
         //
-        data = SPPriorityQueueExtractMinimumElement(&this->_schedulerQueue, &relativeTime);
+        data = SPCPriorityQueueExtractMinimumElement(&this->_schedulerQueue, &relativeTime);
         
         //
         // Compute the time offset, and then execute the block.
@@ -288,7 +293,7 @@ OSStatus SPRealTimeSchedulerInvokeCallback(void   *inRTSchedulerPtr,
         UInt64 timeOffset = (eventTime > inIntervalStart) ? (eventTime - inIntervalStart) : 0;
 
         sched_control_data_t *controlData = (sched_control_data_t *)data;
-        __unsafe_unretained SPRealTimeSchedulerBlock executionBlock = (__bridge SPRealTimeSchedulerBlock)(controlData->execution_block);
+        __unsafe_unretained SPCRealTimeSchedulerBlock executionBlock = (__bridge SPCRealTimeSchedulerBlock)(controlData->execution_block);
         if (executionBlock) {
             
             // Run the block.
@@ -299,18 +304,18 @@ OSStatus SPRealTimeSchedulerInvokeCallback(void   *inRTSchedulerPtr,
             if (!isLastRepetition) {
                 // If the block requires repeated executions, schedule the next one.
                 //
-                SPPriorityQueueInsertElement(&this->_schedulerQueue, relativeTime + controlData->time_between_reps, controlData);
+                SPCPriorityQueueInsertElement(&this->_schedulerQueue, relativeTime + controlData->time_between_reps, controlData);
             } else {
                 // Release the block on the main thread.
                 //
-                SPMessageQueueDispatch(this->_responseQueue, SPReleaseSchedulerControlDataHandler, &controlData, sizeof(void *));
+                SPCMessageQueueDispatch(this->_responseQueue, SPReleaseSchedulerControlDataHandler, &controlData, sizeof(void *));
             }
         }
         
         //
         // Take a peek at the next one.
         //
-        data = SPPriorityQueuePeek_MPSC(&this->_schedulerQueue, &relativeTime);
+        data = SPCPriorityQueuePeek_MPSC(&this->_schedulerQueue, &relativeTime);
     }
     
     return noErr;

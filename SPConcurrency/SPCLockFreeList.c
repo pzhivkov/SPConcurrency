@@ -1,12 +1,17 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPLockFreeList.c
 //  SPLockFreeList.c
 //  Peter Zhivkov.
+=======
+//  SPCLockFreeList.c
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCLockFreeList.c
 //
 //  Created by Peter Zhivkov on 09/02/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
 //
 
-#include "SPLockFreeList.h"
+#include "SPCLockFreeList.h"
 
 #ifndef DEBUG
 #define NDEBUG
@@ -20,15 +25,15 @@
 
 #include "SPUtils.h"
 
-#include "SPPrimitives.h"
-#include "SPMemoryReclamation.h"
+#include "SPCPrimitives.h"
+#include "SPCMemoryReclamation.h"
 
 
 
 /**
  *  A concurrent lock-free list node.
  */
-struct _SPLockFreeListNode {
+struct _SPCLockFreeListNode {
     volatile long  _cmem_refCount_c; // Markable in the lowest bit - claim flag.
     markable_ptr_t _next_d;          // Markable in the lowest bit - del flag.
     long           _key;
@@ -46,7 +51,7 @@ struct _SPLockFreeListNode {
  */
 
 
-static bool unlinkNode(SPLockFreeList *list, SPLockFreeListNode *nodeToUnlink, SPLockFreeListNode **rPrevPtr);
+static bool unlinkNode(SPCLockFreeList *list, SPCLockFreeListNode *nodeToUnlink, SPCLockFreeListNode **rPrevPtr);
 
 
 
@@ -63,13 +68,13 @@ static bool unlinkNode(SPLockFreeList *list, SPLockFreeListNode *nodeToUnlink, S
  *
  *  @return A newly created node with the requested key and data.
  */
-static FORCE_INLINE SPLockFreeListNode *createNode(SPLockFreeList *list, long key, void *data)
+static FORCE_INLINE SPCLockFreeListNode *createNode(SPCLockFreeList *list, long key, void *data)
 {
     assert(list);
 
-    SPLockFreeListNode *newNode = cmem_allocNode((void *volatile *)(&list->_freeList),
-                                                 offsetof(SPLockFreeListNode, _cmem_refCount_c),
-                                                 offsetof(SPLockFreeListNode, _next_d));
+    SPCLockFreeListNode *newNode = cmem_allocNode((void *volatile *)(&list->_freeList),
+                                                  offsetof(SPCLockFreeListNode, _cmem_refCount_c),
+                                                  offsetof(SPCLockFreeListNode, _next_d));
     if (!newNode)
         return NULL;
     
@@ -90,11 +95,11 @@ static FORCE_INLINE SPLockFreeListNode *createNode(SPLockFreeList *list, long ke
  *
  *  @return The retained node.
  */
-static FORCE_INLINE SPLockFreeListNode *retainNode(SPLockFreeListNode *node)
+static FORCE_INLINE SPCLockFreeListNode *retainNode(SPCLockFreeListNode *node)
 {
-    assert(cmem_isRetained(node, offsetof(SPLockFreeListNode, _cmem_refCount_c)));
+    assert(cmem_isRetained(node, offsetof(SPCLockFreeListNode, _cmem_refCount_c)));
     
-    cmem_retainNode(node, offsetof(SPLockFreeListNode, _cmem_refCount_c));
+    cmem_retainNode(node, offsetof(SPCLockFreeListNode, _cmem_refCount_c));
     
     return node;
 }
@@ -106,13 +111,13 @@ static FORCE_INLINE SPLockFreeListNode *retainNode(SPLockFreeListNode *node)
  *  @param list A list.
  *  @param node A node.
  */
-static FORCE_INLINE void releaseNode(SPLockFreeList *list, SPLockFreeListNode *node)
+static FORCE_INLINE void releaseNode(SPCLockFreeList *list, SPCLockFreeListNode *node)
 {
-    assert(cmem_isRetained(node, offsetof(SPLockFreeListNode, _cmem_refCount_c)));
+    assert(cmem_isRetained(node, offsetof(SPCLockFreeListNode, _cmem_refCount_c)));
     
     return cmem_releaseNode(node,
-                            offsetof(SPLockFreeListNode, _cmem_refCount_c),
-                            offsetof(SPLockFreeListNode, _next_d),
+                            offsetof(SPCLockFreeListNode, _cmem_refCount_c),
+                            offsetof(SPCLockFreeListNode, _next_d),
                             1,
                             -1,
                             (void *volatile *)(&list->_freeList));
@@ -128,7 +133,7 @@ static FORCE_INLINE void releaseNode(SPLockFreeList *list, SPLockFreeListNode *n
  *
  *  @return A regular pointer to a retained node.
  */
-static FORCE_INLINE SPLockFreeListNode *readAndRetainNode_d(SPLockFreeList *list, markable_ptr_t *node_d_Ptr)
+static FORCE_INLINE SPCLockFreeListNode *readAndRetainNode_d(SPCLockFreeList *list, markable_ptr_t *node_d_Ptr)
 {
     assert(list);
     assert(node_d_Ptr);
@@ -140,21 +145,21 @@ static FORCE_INLINE SPLockFreeListNode *readAndRetainNode_d(SPLockFreeList *list
         if (isMarked_m(node_d))
             return NULL;
         
-        SPLockFreeListNode *node = toPtr_m(node_d);
+        SPCLockFreeListNode *node = toPtr_m(node_d);
         assert(node);
 
-        cmem_retainNode(node, offsetof(SPLockFreeListNode, _cmem_refCount_c));
+        cmem_retainNode(node, offsetof(SPCLockFreeListNode, _cmem_refCount_c));
         SPC_MEMORY_BARRIER_FULL();
 
         if (node_d == *node_d_Ptr) {
-            assert(cmem_isRetained(node, offsetof(SPLockFreeListNode, _cmem_refCount_c)));
+            assert(cmem_isRetained(node, offsetof(SPCLockFreeListNode, _cmem_refCount_c)));
             
             return node;
         } else {
             // This should never need to use the free list unless we preempted a reclaim.
             cmem_releaseNode(node,
-                             offsetof(SPLockFreeListNode, _cmem_refCount_c),
-                             offsetof(SPLockFreeListNode, _next_d),
+                             offsetof(SPCLockFreeListNode, _cmem_refCount_c),
+                             offsetof(SPCLockFreeListNode, _next_d),
                              1,
                              -1,
                              (void *volatile *)(&list->_freeList));
@@ -176,7 +181,7 @@ static FORCE_INLINE SPLockFreeListNode *readAndRetainNode_d(SPLockFreeList *list
  *
  *  @return true if successful; false, otherwise.
  */
-bool SPLockFreeListInit(SPLockFreeList *list, size_t length)
+bool SPCLockFreeListInit(SPCLockFreeList *list, size_t length)
 {
     assert(list);
     
@@ -185,11 +190,11 @@ bool SPLockFreeListInit(SPLockFreeList *list, size_t length)
     // (Reserve 2 nodes for head and tail.)
     //
     size_t listLength = length + 2;
-    list->_storage = calloc(listLength, sizeof(SPLockFreeListNode));
+    list->_storage = calloc(listLength, sizeof(SPCLockFreeListNode));
     if (!list->_storage) {
         STD_OUTPUT_ERROR("list allocation", "FAILURE");
         
-        SPLockFreeListDispose(list);
+        SPCLockFreeListDispose(list);
         return false;
     }
     
@@ -199,9 +204,9 @@ bool SPLockFreeListInit(SPLockFreeList *list, size_t length)
     // Prepare the free list for the custom lock-free memory allocator.
     //
     cmem_init((void *volatile *)(&list->_freeList),
-              offsetof(SPLockFreeListNode, _cmem_refCount_c),
-              offsetof(SPLockFreeListNode, _next_d),
-              sizeof(SPLockFreeListNode),
+              offsetof(SPCLockFreeListNode, _cmem_refCount_c),
+              offsetof(SPCLockFreeListNode, _next_d),
+              sizeof(SPCLockFreeListNode),
               list->_storage,
               listLength);
     
@@ -223,14 +228,14 @@ bool SPLockFreeListInit(SPLockFreeList *list, size_t length)
  *
  *  @param list A pointer to a lock-free list.
  */
-void SPLockFreeListDispose(SPLockFreeList *list)
+void SPCLockFreeListDispose(SPCLockFreeList *list)
 {
     // Prevent old changes from being observed happening after the queue release.
     SPC_MEMORY_BARRIER_STORE();
     
     free(list->_storage);
     
-    memset(list, 0, sizeof(SPLockFreeList));
+    memset(list, 0, sizeof(SPCLockFreeList));
 }
 
 
@@ -253,17 +258,17 @@ void SPLockFreeListDispose(SPLockFreeList *list)
  *
  *  @return The next node (retained) or NULL if a deletion on the way to the next node fails.
  */
-static SPLockFreeListNode *readNextNode_r(SPLockFreeList *list, SPLockFreeListNode **rNodePtr, SPLockFreeListNode *rPrevNode)
+static SPCLockFreeListNode *readNextNode_r(SPCLockFreeList *list, SPCLockFreeListNode **rNodePtr, SPCLockFreeListNode *rPrevNode)
 {
     assert(list);
     assert(rNodePtr && *rNodePtr);
     assert(rPrevNode);
-    assert(cmem_isRetained(*rNodePtr, offsetof(SPLockFreeListNode, _cmem_refCount_c)));
+    assert(cmem_isRetained(*rNodePtr, offsetof(SPCLockFreeListNode, _cmem_refCount_c)));
 
     if (*rNodePtr == list->_tail)
         return NULL;
     
-    SPLockFreeListNode *rNextNode = readAndRetainNode_d(list, &(*rNodePtr)->_next_d);
+    SPCLockFreeListNode *rNextNode = readAndRetainNode_d(list, &(*rNodePtr)->_next_d);
     while (!rNextNode) {
 
         // Try to delete the marked node.
@@ -307,7 +312,7 @@ static SPLockFreeListNode *readNextNode_r(SPLockFreeList *list, SPLockFreeListNo
  *
  *  @return A node with the same or higher key than the given one (retained).
  */
-SPLockFreeListNode *scanForKey_r(SPLockFreeList *list, SPLockFreeListNode **rPrevPtr, long key)
+SPCLockFreeListNode *scanForKey_r(SPCLockFreeList *list, SPCLockFreeListNode **rPrevPtr, long key)
 {
     assert(list);
     assert(rPrevPtr);
@@ -319,7 +324,7 @@ retry:
         // Start the search from the head.
         //
         *rPrevPtr = retainNode(list->_head);
-        SPLockFreeListNode *rCurNode = readAndRetainNode_d(list, &(*rPrevPtr)->_next_d);
+        SPCLockFreeListNode *rCurNode = readAndRetainNode_d(list, &(*rPrevPtr)->_next_d);
         
         for (;;) {
             // Check if the next node is reachable.
@@ -329,7 +334,7 @@ retry:
                 goto retry;
             }
             
-            SPLockFreeListNode *rNextNode = readNextNode_r(list, &rCurNode, *rPrevPtr);
+            SPCLockFreeListNode *rNextNode = readNextNode_r(list, &rCurNode, *rPrevPtr);
             if (!rCurNode) {
                 releaseNode(list, *rPrevPtr);
                 goto retry;
@@ -372,7 +377,7 @@ retry:
  *
  *  @return true if successful.
  */
-bool SPLockFreeListInsertElement(SPLockFreeList *list, long key, void *data)
+bool SPCLockFreeListInsertElement(SPCLockFreeList *list, long key, void *data)
 {
     assert(list);
     
@@ -383,7 +388,7 @@ bool SPLockFreeListInsertElement(SPLockFreeList *list, long key, void *data)
     //
     // Create a new node.
     //
-    SPLockFreeListNode *rNewNode = createNode(list, key, data);
+    SPCLockFreeListNode *rNewNode = createNode(list, key, data);
     if (!rNewNode)
         return false;
     
@@ -393,9 +398,9 @@ bool SPLockFreeListInsertElement(SPLockFreeList *list, long key, void *data)
         //
         // Search for a position in the list after which to insert the new node.
         //
-        SPLockFreeListNode *rInsertionPoint = 0;
+        SPCLockFreeListNode *rInsertionPoint = 0;
         
-        SPLockFreeListNode *rNextNode = scanForKey_r(list, &rInsertionPoint, key);
+        SPCLockFreeListNode *rNextNode = scanForKey_r(list, &rInsertionPoint, key);
         if (rNextNode->_key == key) {
             releaseNode(list, rNextNode);
             releaseNode(list, rInsertionPoint);
@@ -437,7 +442,7 @@ bool SPLockFreeListInsertElement(SPLockFreeList *list, long key, void *data)
  *  @param nodeToUnlink A node to unlink.
  *  @param rPrevPtr     A retained pointer to a prev pointer.
  */
-static bool unlinkNode(SPLockFreeList *list, SPLockFreeListNode *nodeToUnlink, SPLockFreeListNode **rPrevPtr)
+static bool unlinkNode(SPCLockFreeList *list, SPCLockFreeListNode *nodeToUnlink, SPCLockFreeListNode **rPrevPtr)
 {
     assert(list);
     assert(nodeToUnlink);
@@ -469,7 +474,7 @@ static bool unlinkNode(SPLockFreeList *list, SPLockFreeListNode *nodeToUnlink, S
  *
  *  @return The element with the minimum key value.
  */
-void *SPLockFreeListExtractMinimumElement(SPLockFreeList *list, long *outKey)
+void *SPCLockFreeListExtractMinimumElement(SPCLockFreeList *list, long *outKey)
 {
     assert(list);
     
@@ -480,13 +485,13 @@ void *SPLockFreeListExtractMinimumElement(SPLockFreeList *list, long *outKey)
     // Start from the head and get the first node not marked for deletion.
     //
     
-    SPLockFreeListNode *rPrev = retainNode(list->_head);
+    SPCLockFreeListNode *rPrev = retainNode(list->_head);
     for (;;) {
         
         // Start the search from the head.
         //
         if (!rPrev) { rPrev = retainNode(list->_head); continue; }
-        SPLockFreeListNode *rFirstNode = readAndRetainNode_d(list, &rPrev->_next_d);
+        SPCLockFreeListNode *rFirstNode = readAndRetainNode_d(list, &rPrev->_next_d);
         if (!rFirstNode) continue;
         if (rFirstNode == list->_head) {
             releaseNode(list, rFirstNode);
@@ -502,7 +507,7 @@ void *SPLockFreeListExtractMinimumElement(SPLockFreeList *list, long *outKey)
         
         // Check if the next node is reachable.
         //
-        SPLockFreeListNode *rNextNode = readNextNode_r(list, &rFirstNode, rPrev);
+        SPCLockFreeListNode *rNextNode = readNextNode_r(list, &rFirstNode, rPrev);
         if (!rFirstNode) continue;
         if (!rNextNode) {
             releaseNode(list, rFirstNode);
@@ -565,7 +570,7 @@ void *SPLockFreeListExtractMinimumElement(SPLockFreeList *list, long *outKey)
  *
  *  @return The element corresponding to the given key; NULL if not found.
  */
-void *SPLockFreeListExtractElementWithKey(SPLockFreeList *list, long key)
+void *SPCLockFreeListExtractElementWithKey(SPCLockFreeList *list, long key)
 {
     assert(list);
     
@@ -575,8 +580,8 @@ void *SPLockFreeListExtractElementWithKey(SPLockFreeList *list, long key)
         //
         // Search for a node with the given key.
         //
-        SPLockFreeListNode *rPrev = 0;
-        SPLockFreeListNode *rNode = scanForKey_r(list, &rPrev, key);
+        SPCLockFreeListNode *rPrev = 0;
+        SPCLockFreeListNode *rNode = scanForKey_r(list, &rPrev, key);
         if (rNode->_key != key) {
             
             // Not found. Most likely due to reaching the tail, which has the maximum key.
@@ -589,7 +594,7 @@ void *SPLockFreeListExtractElementWithKey(SPLockFreeList *list, long key)
             
             // Extract the element, by first flagging, and then deleting the node.
             //
-            SPLockFreeListNode *rNextNode = retainNode(toPtr_m(rNode->_next_d));
+            SPCLockFreeListNode *rNextNode = retainNode(toPtr_m(rNode->_next_d));
             if (!SPC_ATOMIC_COMPARE_AND_SWAP(&rNode->_next_d, toMarkable(rNextNode, false), toMarkable(rNextNode, true))) {
                 releaseNode(list, rPrev);
                 releaseNode(list, rNode);

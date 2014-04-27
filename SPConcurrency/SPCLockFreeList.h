@@ -1,13 +1,23 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPLockFreeList.h
 //  SPLockFreeList.h
 //  Peter Zhivkov.
+=======
+//  SPCLockFreeList.h
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCLockFreeList.h
 //
 //  Created by Peter Zhivkov on 09/02/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
 //
 
-#ifndef SpinTimer_SPLockFreeList_h
-#define SpinTimer_SPLockFreeList_h
+<<<<<<< HEAD:SPConcurrency/SPLockFreeList.h
+#ifndef PZ_SPLockFreeList_h
+#define PZ_SPLockFreeList_h
+=======
+#ifndef PZ_SPCLockFreeList_h
+#define PZ_SPCLockFreeList_h
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCLockFreeList.h
 
 #ifndef DEBUG
 #define NDEBUG
@@ -19,23 +29,23 @@
 
 
 
-struct _SPLockFreeListNode;
+struct _SPCLockFreeListNode;
 
-typedef struct _SPLockFreeListNode SPLockFreeListNode;
+typedef struct _SPCLockFreeListNode SPCLockFreeListNode;
 
 
 /**
  *  A concurrent lock-free sorted list structure.
  */
-struct SPLockFreeList {
-    SPLockFreeListNode          *_head;
-    SPLockFreeListNode          *_tail;
-    SPLockFreeListNode *volatile _freeList;
-    void                        *_storage;
-    size_t                       _size;
+struct SPCLockFreeList {
+    SPCLockFreeListNode          *_head;
+    SPCLockFreeListNode          *_tail;
+    SPCLockFreeListNode *volatile _freeList;
+    void                         *_storage;
+    size_t                        _size;
 };
 
-typedef struct SPLockFreeList SPLockFreeList;
+typedef struct SPCLockFreeList SPCLockFreeList;
 
 
 
@@ -47,7 +57,7 @@ typedef struct SPLockFreeList SPLockFreeList;
  *
  *  @return true if successful; false, otherwise.
  */
-bool SPLockFreeListInit(SPLockFreeList *list, size_t length);
+bool SPCLockFreeListInit(SPCLockFreeList *list, size_t length);
 
 
 /**
@@ -55,7 +65,7 @@ bool SPLockFreeListInit(SPLockFreeList *list, size_t length);
  *
  *  @param list A pointer to a lock-free list.
  */
-void SPLockFreeListDispose(SPLockFreeList *list);
+void SPCLockFreeListDispose(SPCLockFreeList *list);
 
 
 /**
@@ -67,7 +77,7 @@ void SPLockFreeListDispose(SPLockFreeList *list);
  *
  *  @return true if successful.
  */
-bool SPLockFreeListInsertElement(SPLockFreeList *list, long key, void *data);
+bool SPCLockFreeListInsertElement(SPCLockFreeList *list, long key, void *data);
 
 
 /**
@@ -78,7 +88,7 @@ bool SPLockFreeListInsertElement(SPLockFreeList *list, long key, void *data);
  *
  *  @return The data corresponding to the given key; NULL if not found.
  */
-void *SPLockFreeListExtractElementWithKey(SPLockFreeList *list, long key);
+void *SPCLockFreeListExtractElementWithKey(SPCLockFreeList *list, long key);
 
 
 /**
@@ -89,7 +99,7 @@ void *SPLockFreeListExtractElementWithKey(SPLockFreeList *list, long key);
  *
  *  @return The element with the minimum key value.
  */
-void *SPLockFreeListExtractMinimumElement(SPLockFreeList *list, long *outKey);
+void *SPCLockFreeListExtractMinimumElement(SPCLockFreeList *list, long *outKey);
 
 
 

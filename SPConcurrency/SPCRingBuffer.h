@@ -1,13 +1,23 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPRingBuffer.h
 //  SPRingBuffer.h
 //  Peter Zhivkov.
+=======
+//  SPCRingBuffer.h
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRingBuffer.h
 //
 //  Created by Peter Zhivkov on 05/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
 //
 
-#ifndef SpinTimer_SPRingBuffer_h
-#define SpinTimer_SPRingBuffer_h
+<<<<<<< HEAD:SPConcurrency/SPRingBuffer.h
+#ifndef PZ_SPRingBuffer_h
+#define PZ_SPRingBuffer_h
+=======
+#ifndef PZ_SPCRingBuffer_h
+#define PZ_SPCRingBuffer_h
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRingBuffer.h
 
 #ifndef DEBUG
 #define NDEBUG
@@ -18,7 +28,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "SPPrimitives.h"
+#include "SPCPrimitives.h"
 
 
 
@@ -28,7 +38,7 @@
  *  Guaranteed to be thread-safe and reentrant in an SPSC (single-producer, single-consumer) model.
  */
 
-struct SPRingBuffer {
+struct SPCRingBuffer {
     void            *_buffer;
     size_t           _length;
     size_t           _tailOffset;
@@ -36,7 +46,7 @@ struct SPRingBuffer {
     volatile size_t  _fillCount;
 };
 
-typedef struct SPRingBuffer SPRingBuffer;
+typedef struct SPCRingBuffer SPCRingBuffer;
 
 
 
@@ -48,7 +58,7 @@ typedef struct SPRingBuffer SPRingBuffer;
  *
  *  @return true if successful; false, otherwise.
  */
-bool SPRingBufferInit(SPRingBuffer *buffer, size_t length);
+bool SPCRingBufferInit(SPCRingBuffer *buffer, size_t length);
 
 
 /**
@@ -56,7 +66,7 @@ bool SPRingBufferInit(SPRingBuffer *buffer, size_t length);
  *
  *  @param buffer A pointer to a ring buffer.
  */
-void SPRingBufferDispose(SPRingBuffer *buffer);
+void SPCRingBufferDispose(SPCRingBuffer *buffer);
 
 
 /**
@@ -64,7 +74,7 @@ void SPRingBufferDispose(SPRingBuffer *buffer);
  *
  *  @param buffer A pointer to a ring buffer.
  */
-void SPRingBufferClear(SPRingBuffer *buffer);
+void SPCRingBufferClear(SPCRingBuffer *buffer);
 
 
 /**
@@ -75,7 +85,7 @@ void SPRingBufferClear(SPRingBuffer *buffer);
  *
  *  @return A pointer to the chunk of data available for reading; NULL if the buffer is empty.
  */
-static FORCE_INLINE void *SPRingBufferGetForRead(SPRingBuffer *buffer, size_t *availableBytes)
+static FORCE_INLINE void *SPCRingBufferGetForRead(SPCRingBuffer *buffer, size_t *availableBytes)
 {
     assert(buffer && availableBytes);
     
@@ -93,7 +103,7 @@ static FORCE_INLINE void *SPRingBufferGetForRead(SPRingBuffer *buffer, size_t *a
  *  @param buffer A pointer to a ring buffer.
  *  @param amount The number of bytes read.
  */
-static FORCE_INLINE void SPRingBufferMarkRead(SPRingBuffer *buffer, size_t bytesRead)
+static FORCE_INLINE void SPCRingBufferMarkRead(SPCRingBuffer *buffer, size_t bytesRead)
 {
     assert(buffer);
     
@@ -113,7 +123,7 @@ static FORCE_INLINE void SPRingBufferMarkRead(SPRingBuffer *buffer, size_t bytes
  *
  *  @return A pointer to the chunk of data available for writing; NULL if the buffer is full.
  */
-static FORCE_INLINE void *SPRingBufferGetForWrite(SPRingBuffer *buffer, size_t *availableBytes)
+static FORCE_INLINE void *SPCRingBufferGetForWrite(SPCRingBuffer *buffer, size_t *availableBytes)
 {
     assert(buffer && availableBytes);
     
@@ -131,7 +141,7 @@ static FORCE_INLINE void *SPRingBufferGetForWrite(SPRingBuffer *buffer, size_t *
  *  @param buffer       A pointer to a ring buffer.
  *  @param bytesWritten The number of bytes written.
  */
-static FORCE_INLINE void SPRingBufferMarkWritten(SPRingBuffer *buffer, size_t bytesWritten)
+static FORCE_INLINE void SPCRingBufferMarkWritten(SPCRingBuffer *buffer, size_t bytesWritten)
 {
     assert(buffer);
     

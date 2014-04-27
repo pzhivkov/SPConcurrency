@@ -1,12 +1,17 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPRingBuffer.c
 //  SPRingBuffer.c
 //  Peter Zhivkov.
+=======
+//  SPCRingBuffer.c
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRingBuffer.c
 //
 //  Created by Peter Zhivkov on 05/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
 //
 
-#include "SPRingBuffer.h"
+#include "SPCRingBuffer.h"
 
 #ifndef DEBUG
 #define NDEBUG
@@ -20,7 +25,7 @@
 
 
 
-bool SPRingBufferInit(SPRingBuffer *buffer, size_t length)
+bool SPCRingBufferInit(SPCRingBuffer *buffer, size_t length)
 {
     assert(buffer);
     
@@ -120,21 +125,21 @@ bool SPRingBufferInit(SPRingBuffer *buffer, size_t length)
 }
 
 
-void SPRingBufferDispose(SPRingBuffer *buffer)
+void SPCRingBufferDispose(SPCRingBuffer *buffer)
 {
     assert(buffer);
     
     vm_deallocate(mach_task_self(), (vm_address_t) buffer->_buffer, buffer->_length * 2);
-    memset(buffer, 0, sizeof(SPRingBuffer));
+    memset(buffer, 0, sizeof(SPCRingBuffer));
 }
 
 
-void SPRingBufferClear(SPRingBuffer *buffer)
+void SPCRingBufferClear(SPCRingBuffer *buffer)
 {
     assert(buffer);
     
     size_t fillCount;
-    if (SPRingBufferGetForRead(buffer, &fillCount)) {
-        SPRingBufferMarkRead(buffer, fillCount);
+    if (SPCRingBufferGetForRead(buffer, &fillCount)) {
+        SPCRingBufferMarkRead(buffer, fillCount);
     }
 }

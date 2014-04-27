@@ -1,6 +1,11 @@
 //
+<<<<<<< HEAD:SPConcurrency/SPRealTimeMessageQueue.h
 //  SPRealTimeMessageQueue.h
 //  Peter Zhivkov.
+=======
+//  SPCRealTimeMessageQueue.h
+//  Peter Zhivkov.
+>>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRealTimeMessageQueue.h
 //
 //  Created by Peter Zhivkov on 08/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
@@ -9,13 +14,13 @@
 #import <Foundation/Foundation.h>
 
 
-@class SPMessageQueue;
+@class SPCMessageQueue;
 
 
 /**
  *  A lock-less message queue intended for real-time processing.
  */
-@interface SPRealTimeMessageQueue : NSObject
+@interface SPCRealTimeMessageQueue : NSObject
 
 
 + (instancetype)new   __attribute__((unavailable("new not available, call designated initializer instead")));
@@ -29,7 +34,7 @@
 *
 *  @return The queue if successful.
 */
-- (instancetype)initWithResponseQueue:(SPMessageQueue *)responseQueue;
+- (instancetype)initWithResponseQueue:(SPCMessageQueue *)responseQueue;
 
 
 /**
@@ -55,7 +60,7 @@
  *
  *  @param realTimeMessageQueue A real-time message queue.
  */
-void SPRealTimeMessageQueueProccessMessages(SPRealTimeMessageQueue *realTimeMessageQueue);
+void SPCRealTimeMessageQueueProccessMessages(SPCRealTimeMessageQueue *realTimeMessageQueue);
 
 
 
