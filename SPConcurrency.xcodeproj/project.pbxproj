@@ -13,11 +13,20 @@
 		30834F8B190C943C00889C7D /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30834F8A190C943C00889C7D /* UIKit.framework */; };
 		30834F8E190C943C00889C7D /* libSPConcurrency.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 30834F76190C943C00889C7D /* libSPConcurrency.a */; };
 		30834F94190C943C00889C7D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 30834F92190C943C00889C7D /* InfoPlist.strings */; };
-		30834F96190C943C00889C7D /* SPConcurrencyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 30834F95190C943C00889C7D /* SPConcurrencyTests.m */; };
 		30834FA2190C94D800889C7D /* SPUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 30834FA1190C94D800889C7D /* SPUtils.m */; };
 		30834FAB190C94E500889C7D /* SPLockFreeList.c in Sources */ = {isa = PBXBuildFile; fileRef = 30834FA3190C94E500889C7D /* SPLockFreeList.c */; };
 		30834FAC190C94E500889C7D /* SPPriorityQueue.c in Sources */ = {isa = PBXBuildFile; fileRef = 30834FA7190C94E500889C7D /* SPPriorityQueue.c */; };
 		30834FAD190C94E500889C7D /* SPRingBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 30834FA9190C94E500889C7D /* SPRingBuffer.c */; };
+		30834FB0190C953900889C7D /* SPConcurrency.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834F9F190C94CB00889C7D /* SPConcurrency.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30834FB1190C954700889C7D /* SPUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834FA0190C94D800889C7D /* SPUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30834FB2190C958A00889C7D /* SPPrimitives.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834FA6190C94E500889C7D /* SPPrimitives.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30834FB3190C959000889C7D /* SPMemoryReclamation.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834FA5190C94E500889C7D /* SPMemoryReclamation.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30834FB4190C959600889C7D /* SPLockFreeList.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834FA4190C94E500889C7D /* SPLockFreeList.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30834FB5190C959B00889C7D /* SPPriorityQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834FA8190C94E500889C7D /* SPPriorityQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30834FB6190C95A600889C7D /* SPRingBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834FAA190C94E500889C7D /* SPRingBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30834FB9190C95D800889C7D /* SPLockFreeListTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 30834FB8190C95D800889C7D /* SPLockFreeListTests.m */; };
+		30834FBB190C95E200889C7D /* SPMemoryReclamationTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 30834FBA190C95E200889C7D /* SPMemoryReclamationTests.m */; };
+		30834FBD190C95F900889C7D /* SPPriorityQueueTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 30834FBC190C95F900889C7D /* SPPriorityQueueTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,7 +60,6 @@
 		30834F8A190C943C00889C7D /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		30834F91190C943C00889C7D /* SPConcurrencyTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SPConcurrencyTests-Info.plist"; sourceTree = "<group>"; };
 		30834F93190C943C00889C7D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		30834F95190C943C00889C7D /* SPConcurrencyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPConcurrencyTests.m; sourceTree = "<group>"; };
 		30834F9F190C94CB00889C7D /* SPConcurrency.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPConcurrency.h; sourceTree = "<group>"; };
 		30834FA0190C94D800889C7D /* SPUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPUtils.h; sourceTree = "<group>"; };
 		30834FA1190C94D800889C7D /* SPUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPUtils.m; sourceTree = "<group>"; };
@@ -63,6 +71,9 @@
 		30834FA8190C94E500889C7D /* SPPriorityQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPPriorityQueue.h; sourceTree = "<group>"; };
 		30834FA9190C94E500889C7D /* SPRingBuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = SPRingBuffer.c; sourceTree = "<group>"; };
 		30834FAA190C94E500889C7D /* SPRingBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPRingBuffer.h; sourceTree = "<group>"; };
+		30834FB8190C95D800889C7D /* SPLockFreeListTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPLockFreeListTests.m; sourceTree = "<group>"; };
+		30834FBA190C95E200889C7D /* SPMemoryReclamationTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPMemoryReclamationTests.m; sourceTree = "<group>"; };
+		30834FBC190C95F900889C7D /* SPPriorityQueueTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPPriorityQueueTests.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,7 +158,9 @@
 		30834F8F190C943C00889C7D /* SPConcurrencyTests */ = {
 			isa = PBXGroup;
 			children = (
-				30834F95190C943C00889C7D /* SPConcurrencyTests.m */,
+				30834FBA190C95E200889C7D /* SPMemoryReclamationTests.m */,
+				30834FB8190C95D800889C7D /* SPLockFreeListTests.m */,
+				30834FBC190C95F900889C7D /* SPPriorityQueueTests.m */,
 				30834F90190C943C00889C7D /* Supporting Files */,
 			);
 			path = SPConcurrencyTests;
@@ -164,6 +177,23 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		30834FAE190C952300889C7D /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				30834FB0190C953900889C7D /* SPConcurrency.h in Headers */,
+				30834FB4190C959600889C7D /* SPLockFreeList.h in Headers */,
+				30834FB1190C954700889C7D /* SPUtils.h in Headers */,
+				30834FB3190C959000889C7D /* SPMemoryReclamation.h in Headers */,
+				30834FB2190C958A00889C7D /* SPPrimitives.h in Headers */,
+				30834FB5190C959B00889C7D /* SPPriorityQueue.h in Headers */,
+				30834FB6190C95A600889C7D /* SPRingBuffer.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		30834F75190C943C00889C7D /* SPConcurrency */ = {
 			isa = PBXNativeTarget;
@@ -172,6 +202,7 @@
 				30834F72190C943C00889C7D /* Sources */,
 				30834F73190C943C00889C7D /* Frameworks */,
 				30834F74190C943C00889C7D /* CopyFiles */,
+				30834FAE190C952300889C7D /* Headers */,
 			);
 			buildRules = (
 			);
@@ -254,7 +285,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				30834F96190C943C00889C7D /* SPConcurrencyTests.m in Sources */,
+				30834FB9190C95D800889C7D /* SPLockFreeListTests.m in Sources */,
+				30834FBD190C95F900889C7D /* SPPriorityQueueTests.m in Sources */,
+				30834FBB190C95E200889C7D /* SPMemoryReclamationTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,6 +460,7 @@
 				30834F9B190C943C00889C7D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		30834F9C190C943C00889C7D /* Build configuration list for PBXNativeTarget "SPConcurrencyTests" */ = {
 			isa = XCConfigurationList;
@@ -435,6 +469,7 @@
 				30834F9E190C943C00889C7D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
