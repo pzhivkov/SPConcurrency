@@ -22,6 +22,12 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		30201A72190C9F2500740762 /* SPMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 30201A6C190C9F2500740762 /* SPMessageQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30201A73190C9F2500740762 /* SPMessageQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 30201A6D190C9F2500740762 /* SPMessageQueue.m */; };
+		30201A74190C9F2500740762 /* SPRealTimeMessageQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 30201A6E190C9F2500740762 /* SPRealTimeMessageQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30201A75190C9F2500740762 /* SPRealTimeMessageQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 30201A6F190C9F2500740762 /* SPRealTimeMessageQueue.m */; };
+		30201A76190C9F2500740762 /* SPRealTimeScheduler.h in Headers */ = {isa = PBXBuildFile; fileRef = 30201A70190C9F2500740762 /* SPRealTimeScheduler.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		30201A77190C9F2500740762 /* SPRealTimeScheduler.m in Sources */ = {isa = PBXBuildFile; fileRef = 30201A71190C9F2500740762 /* SPRealTimeScheduler.m */; };
 		30834F7A190C943C00889C7D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30834F79190C943C00889C7D /* Foundation.framework */; };
 		30834F88190C943C00889C7D /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30834F87190C943C00889C7D /* XCTest.framework */; };
 		30834F89190C943C00889C7D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30834F79190C943C00889C7D /* Foundation.framework */; };
@@ -74,6 +80,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		30201A6C190C9F2500740762 /* SPMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPMessageQueue.h; sourceTree = "<group>"; };
+		30201A6D190C9F2500740762 /* SPMessageQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPMessageQueue.m; sourceTree = "<group>"; };
+		30201A6E190C9F2500740762 /* SPRealTimeMessageQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPRealTimeMessageQueue.h; sourceTree = "<group>"; };
+		30201A6F190C9F2500740762 /* SPRealTimeMessageQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPRealTimeMessageQueue.m; sourceTree = "<group>"; };
+		30201A70190C9F2500740762 /* SPRealTimeScheduler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPRealTimeScheduler.h; sourceTree = "<group>"; };
+		30201A71190C9F2500740762 /* SPRealTimeScheduler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPRealTimeScheduler.m; sourceTree = "<group>"; };
 		30834F76190C943C00889C7D /* libSPConcurrency.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libSPConcurrency.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		30834F79190C943C00889C7D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		30834F7D190C943C00889C7D /* SPConcurrency-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SPConcurrency-Prefix.pch"; sourceTree = "<group>"; };
@@ -121,6 +133,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		30201A6A190C9EFE00740762 /* Data Structures */ = {
+			isa = PBXGroup;
+			children = (
+				30834FA3190C94E500889C7D /* SPLockFreeList.c */,
+				30834FA4190C94E500889C7D /* SPLockFreeList.h */,
+				30834FA7190C94E500889C7D /* SPPriorityQueue.c */,
+				30834FA8190C94E500889C7D /* SPPriorityQueue.h */,
+				30834FA9190C94E500889C7D /* SPRingBuffer.c */,
+				30834FAA190C94E500889C7D /* SPRingBuffer.h */,
+			);
+			name = "Data Structures";
+			sourceTree = "<group>";
+		};
+		30201A6B190C9F0800740762 /* Messaging */ = {
+			isa = PBXGroup;
+			children = (
+				30201A6C190C9F2500740762 /* SPMessageQueue.h */,
+				30201A6D190C9F2500740762 /* SPMessageQueue.m */,
+				30201A6E190C9F2500740762 /* SPRealTimeMessageQueue.h */,
+				30201A6F190C9F2500740762 /* SPRealTimeMessageQueue.m */,
+				30201A70190C9F2500740762 /* SPRealTimeScheduler.h */,
+				30201A71190C9F2500740762 /* SPRealTimeScheduler.m */,
+			);
+			name = Messaging;
+			sourceTree = "<group>";
+		};
 		30834F6D190C943C00889C7D = {
 			isa = PBXGroup;
 			children = (
@@ -158,12 +196,8 @@
 				30834FA1190C94D800889C7D /* SPUtils.m */,
 				30834FA6190C94E500889C7D /* SPPrimitives.h */,
 				30834FA5190C94E500889C7D /* SPMemoryReclamation.h */,
-				30834FA3190C94E500889C7D /* SPLockFreeList.c */,
-				30834FA4190C94E500889C7D /* SPLockFreeList.h */,
-				30834FA7190C94E500889C7D /* SPPriorityQueue.c */,
-				30834FA8190C94E500889C7D /* SPPriorityQueue.h */,
-				30834FA9190C94E500889C7D /* SPRingBuffer.c */,
-				30834FAA190C94E500889C7D /* SPRingBuffer.h */,
+				30201A6A190C9EFE00740762 /* Data Structures */,
+				30201A6B190C9F0800740762 /* Messaging */,
 				30834F7C190C943C00889C7D /* Supporting Files */,
 			);
 			path = SPConcurrency;
@@ -206,11 +240,14 @@
 			files = (
 				30834FB0190C953900889C7D /* SPConcurrency.h in Headers */,
 				30834FB4190C959600889C7D /* SPLockFreeList.h in Headers */,
+				30201A76190C9F2500740762 /* SPRealTimeScheduler.h in Headers */,
+				30201A74190C9F2500740762 /* SPRealTimeMessageQueue.h in Headers */,
 				30834FB1190C954700889C7D /* SPUtils.h in Headers */,
 				30834FB3190C959000889C7D /* SPMemoryReclamation.h in Headers */,
 				30834FB2190C958A00889C7D /* SPPrimitives.h in Headers */,
 				30834FB5190C959B00889C7D /* SPPriorityQueue.h in Headers */,
 				30834FB6190C95A600889C7D /* SPRingBuffer.h in Headers */,
+				30201A72190C9F2500740762 /* SPMessageQueue.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,8 +364,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30201A73190C9F2500740762 /* SPMessageQueue.m in Sources */,
 				30834FAD190C94E500889C7D /* SPRingBuffer.c in Sources */,
+				30201A77190C9F2500740762 /* SPRealTimeScheduler.m in Sources */,
 				30834FA2190C94D800889C7D /* SPUtils.m in Sources */,
+				30201A75190C9F2500740762 /* SPRealTimeMessageQueue.m in Sources */,
 				30834FAB190C94E500889C7D /* SPLockFreeList.c in Sources */,
 				30834FAC190C94E500889C7D /* SPPriorityQueue.c in Sources */,
 			);
@@ -538,6 +578,7 @@
 				30062F8C190C9A0D0063E665 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		30834F71190C943C00889C7D /* Build configuration list for PBXProject "SPConcurrency" */ = {
 			isa = XCConfigurationList;
