@@ -264,8 +264,8 @@ static void SPReleaseSchedulerControlDataHandler(void *refCon, size_t refConSize
  *  @return A status code
  */
 OSStatus SPCRealTimeSchedulerInvokeCallback(void   *inRTSchedulerPtr,
-                                           UInt64  inIntervalStart,
-                                           UInt64  inIntervalEnd)
+                                            UInt64  inIntervalStart,
+                                            UInt64  inIntervalEnd)
 {
     SPCRealTimeScheduler *this = (__bridge SPCRealTimeScheduler *)inRTSchedulerPtr;
     assert(this);
@@ -289,7 +289,7 @@ OSStatus SPCRealTimeSchedulerInvokeCallback(void   *inRTSchedulerPtr,
         //
         // Compute the time offset, and then execute the block.
         //
-        UInt64 eventTime   = this->_hostBaseTime + relativeTime;
+        UInt64 eventTime  = this->_hostBaseTime + relativeTime;
         UInt64 timeOffset = (eventTime > inIntervalStart) ? (eventTime - inIntervalStart) : 0;
 
         sched_control_data_t *controlData = (sched_control_data_t *)data;

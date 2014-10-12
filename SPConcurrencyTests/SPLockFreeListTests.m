@@ -1,6 +1,11 @@
 //
+<<<<<<< HEAD
 //  SPLockFreeListTests.m
 //  Peter Zhivkov.
+=======
+//  SPCLockFreeListTests.m
+//  Peter Zhivkov.
+>>>>>>> 73d8aff... Fix unit tests.
 //
 //  Created by Peter Zhivkov on 10/02/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
@@ -8,7 +13,7 @@
 
 #import <XCTest/XCTest.h>
 
-#include "SPLockFreeList.h"
+#include "SPCLockFreeList.h"
 
 
 struct test_elem_t {
@@ -21,9 +26,9 @@ typedef struct test_elem_t test_elem_t;
 
 
 
-@interface SPLockFreeListTests : XCTestCase
+@interface SPCLockFreeListTests : XCTestCase
 
-@property (nonatomic) SPLockFreeList list;
+@property (nonatomic) SPCLockFreeList list;
 
 @end
 
@@ -32,18 +37,18 @@ const size_t kDefaultListSize = 4096;
 
 
 
-@implementation SPLockFreeListTests
+@implementation SPCLockFreeListTests
 
 - (void)setUp
 {
     [super setUp];
 
-    SPLockFreeListInit(&_list, kDefaultListSize);
+    SPCLockFreeListInit(&_list, kDefaultListSize);
 }
 
 - (void)tearDown
 {
-    SPLockFreeListDispose(&_list);
+    SPCLockFreeListDispose(&_list);
     [super tearDown];
 }
 
@@ -51,16 +56,16 @@ const size_t kDefaultListSize = 4096;
 
 - (void)testInitsAndDisposesCorrectly
 {
-    SPLockFreeListDispose(&_list);
+    SPCLockFreeListDispose(&_list);
     
     for (size_t numElems = 512; numElems <= 1048576; numElems *= 2) {
         
-        XCTAssertTrue(SPLockFreeListInit(&_list, numElems),
+        XCTAssertTrue(SPCLockFreeListInit(&_list, numElems),
                       @"List can't be initialized.");
-        SPLockFreeListDispose(&_list);
+        SPCLockFreeListDispose(&_list);
     }
     
-    XCTAssertTrue(SPLockFreeListInit(&_list, kDefaultListSize),
+    XCTAssertTrue(SPCLockFreeListInit(&_list, kDefaultListSize),
                   @"List can't be initialized.");
 }
 
@@ -74,19 +79,19 @@ const size_t kDefaultListSize = 4096;
         .data = (void *)(sizeof(void *))
     };
     
-    XCTAssertTrue(SPLockFreeListInsertElement(&_list, oneElem.key, oneElem.data),
+    XCTAssertTrue(SPCLockFreeListInsertElement(&_list, oneElem.key, oneElem.data),
                   @"Can't insert element into list.");
     
-    XCTAssertTrue(SPLockFreeListInsertElement(&_list, oneElem.key, oneElem.data),
+    XCTAssertTrue(SPCLockFreeListInsertElement(&_list, oneElem.key, oneElem.data),
                   @"Can't insert element into list twice.");
     
-    retrieveOneElem.data = SPLockFreeListExtractMinimumElement(&_list, &retrieveOneElem.key);
+    retrieveOneElem.data = SPCLockFreeListExtractMinimumElement(&_list, &retrieveOneElem.key);
     
     XCTAssertTrue(retrieveOneElem.data == oneElem.data && retrieveOneElem.key == oneElem.key,
                   @"List returns corrupt element.");
     
     // Make sure the queue is empty.
-    XCTAssertTrue(SPLockFreeListExtractMinimumElement(&_list, 0) == NULL,
+    XCTAssertTrue(SPCLockFreeListExtractMinimumElement(&_list, 0) == NULL,
                   @"List fails to delete minimum element after extraction.");
 }
 
@@ -111,28 +116,28 @@ const size_t kDefaultListSize = 4096;
     };
     
     for (int dups = 0; dups < kDefaultListSize * 4; ++dups) {
-        XCTAssertTrue(SPLockFreeListInsertElement(&_list, threeElem.key, threeElem.data),
+        XCTAssertTrue(SPCLockFreeListInsertElement(&_list, threeElem.key, threeElem.data),
                       @"Can't insert element into list.");
-        XCTAssertTrue(SPLockFreeListInsertElement(&_list, oneElem.key, oneElem.data),
+        XCTAssertTrue(SPCLockFreeListInsertElement(&_list, oneElem.key, oneElem.data),
                       @"Can't insert element into list.");
-        XCTAssertTrue(SPLockFreeListInsertElement(&_list, twoElem.key, twoElem.data),
+        XCTAssertTrue(SPCLockFreeListInsertElement(&_list, twoElem.key, twoElem.data),
                       @"Can't insert element into list.");
     }
     
-    retrieveElem.data = SPLockFreeListExtractMinimumElement(&_list, &retrieveElem.key);
+    retrieveElem.data = SPCLockFreeListExtractMinimumElement(&_list, &retrieveElem.key);
     XCTAssertTrue(retrieveElem.data == oneElem.data && retrieveElem.key == oneElem.key,
                   @"List returns wrong element.");
     
-    retrieveElem.data = SPLockFreeListExtractMinimumElement(&_list, &retrieveElem.key);
+    retrieveElem.data = SPCLockFreeListExtractMinimumElement(&_list, &retrieveElem.key);
     XCTAssertTrue(retrieveElem.data == twoElem.data && retrieveElem.key == twoElem.key,
                   @"List returns wrong element.");
     
-    retrieveElem.data = SPLockFreeListExtractMinimumElement(&_list, &retrieveElem.key);
+    retrieveElem.data = SPCLockFreeListExtractMinimumElement(&_list, &retrieveElem.key);
     XCTAssertTrue(retrieveElem.data == threeElem.data && retrieveElem.key == threeElem.key,
                   @"List returns wrong element.");
     
     // Make sure the queue is empty.
-    XCTAssertTrue(SPLockFreeListExtractMinimumElement(&_list, 0) == NULL,
+    XCTAssertTrue(SPCLockFreeListExtractMinimumElement(&_list, 0) == NULL,
                   @"List still holds elements after extracting everything from it.");
 }
 
@@ -150,12 +155,12 @@ const size_t kDefaultListSize = 4096;
                                    numberOfThreads:(size_t)numThreads
                                       numberOfRuns:(size_t)numRuns
 {
-    //SPLockFreeListDispose(&_list);
-    __block SPLockFreeList list;
+    //SPCLockFreeListDispose(&_list);
+    __block SPCLockFreeList list;
     for (int reps = 0; reps < numRuns; ++reps) {
         fprintf(stderr, ".");
         const size_t totalNumElems = numElems;
-        XCTAssertTrue(SPLockFreeListInit(&list, totalNumElems * numThreads));
+        XCTAssertTrue(SPCLockFreeListInit(&list, totalNumElems * numThreads));
         
         
         dispatch_group_t group = dispatch_group_create();
@@ -178,7 +183,7 @@ const size_t kDefaultListSize = 4096;
                 for (int numElem = 0; numElem < totalNumElems * 2; ++numElem) {
                     test_elem_t retrieveElem;
                     
-                    retrieveElem.data = SPLockFreeListExtractMinimumElement(&list, &retrieveElem.key);
+                    retrieveElem.data = SPCLockFreeListExtractMinimumElement(&list, &retrieveElem.key);
                 }
             });
         }
@@ -186,14 +191,14 @@ const size_t kDefaultListSize = 4096;
         dispatch_resume(queue);
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         
-        SPLockFreeListDispose(&list);
+        SPCLockFreeListDispose(&list);
     }
-    //SPLockFreeListInit(&_list, 4096);
+    //SPCLockFreeListInit(&_list, 4096);
     fprintf(stderr, "\n");
 }
 
 
-- (void)fillListWithOrderedElements:(SPLockFreeList *)localList
+- (void)fillListWithOrderedElements:(SPCLockFreeList *)localList
                        startingFrom:(const size_t)startIdx
                                upTo:(const size_t)endIdx
 {
@@ -205,7 +210,7 @@ const size_t kDefaultListSize = 4096;
             .data = (void *)(sizeof(void *) * numElem)
         };
         
-        XCTAssertTrue(SPLockFreeListInsertElement(localList, oneElem.key, oneElem.data),
+        XCTAssertTrue(SPCLockFreeListInsertElement(localList, oneElem.key, oneElem.data),
                       @"Can't insert element into list.");
     }
     
@@ -217,7 +222,7 @@ const size_t kDefaultListSize = 4096;
             .data = (void *)(sizeof(void *) * numElem)
         };
         
-        XCTAssertTrue(SPLockFreeListInsertElement(localList, oneElem.key, oneElem.data),
+        XCTAssertTrue(SPCLockFreeListInsertElement(localList, oneElem.key, oneElem.data),
                       @"Can't insert element into list.");
     }
 }

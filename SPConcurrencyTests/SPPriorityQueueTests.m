@@ -1,6 +1,11 @@
 //
+<<<<<<< HEAD
 //  SPPriorityQueueTests.m
 //  Peter Zhivkov.
+=======
+//  SPCPriorityQueueTests.m
+//  Peter Zhivkov.
+>>>>>>> 73d8aff... Fix unit tests.
 //
 //  Created by Peter Zhivkov on 01/02/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
@@ -8,11 +13,11 @@
 
 #import <XCTest/XCTest.h>
 
-#import "SPPriorityQueue.h"
+#import "SPCPriorityQueue.h"
 
 
 struct test_elem_t {
-    SPPriorityQueueKey     key;
+    SPCPriorityQueueKey     key;
     void                  *data;
 };
 
@@ -20,28 +25,28 @@ typedef struct test_elem_t test_elem_t;
 
 
 
-@interface SPPriorityQueueTests : XCTestCase
+@interface SPCPriorityQueueTests : XCTestCase
 
-@property (nonatomic) SPPriorityQueue pqueue;
+@property (nonatomic) SPCPriorityQueue pqueue;
 
 @end
 
 const size_t kDefaultQueueSize = 4096;
 
-@implementation SPPriorityQueueTests
+@implementation SPCPriorityQueueTests
 
 
 - (void)setUp
 {
     [super setUp];
 
-    XCTAssertTrue(SPPriorityQueueInit(&_pqueue, kDefaultQueueSize));
+    XCTAssertTrue(SPCPriorityQueueInit(&_pqueue, kDefaultQueueSize));
 }
 
 
 - (void)tearDown
 {
-    SPPriorityQueueDispose(&_pqueue);
+    SPCPriorityQueueDispose(&_pqueue);
     
     [super tearDown];
 }
@@ -49,16 +54,16 @@ const size_t kDefaultQueueSize = 4096;
 
 - (void)testInitsAndDisposesCorrectly
 {
-    SPPriorityQueueDispose(&_pqueue);
+    SPCPriorityQueueDispose(&_pqueue);
     
     for (size_t numElems = 512; numElems <= 1048576; numElems *= 2) {
         
-        XCTAssertTrue(SPPriorityQueueInit(&_pqueue, numElems),
+        XCTAssertTrue(SPCPriorityQueueInit(&_pqueue, numElems),
                       @"Priority queue can't be initialized.");
-        SPPriorityQueueDispose(&_pqueue);
+        SPCPriorityQueueDispose(&_pqueue);
     }
     
-    XCTAssertTrue(SPPriorityQueueInit(&_pqueue, kDefaultQueueSize),
+    XCTAssertTrue(SPCPriorityQueueInit(&_pqueue, kDefaultQueueSize),
                   @"Priority queue can't be initialized.");
 }
 
@@ -70,7 +75,7 @@ const size_t kDefaultQueueSize = 4096;
         .data = (void *)(0x1)
     };
     
-    XCTAssertFalse(SPPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
+    XCTAssertFalse(SPCPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
                    @"Priority queue accepts misaligned data.");
 }
 
@@ -83,16 +88,16 @@ const size_t kDefaultQueueSize = 4096;
         .data = (void *)(sizeof(void *))
     };
 
-    XCTAssertTrue(SPPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
+    XCTAssertTrue(SPCPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
                   @"Can't insert element into queue.");
 
-    retrieveOneElem.data = SPPriorityQueueExtractMinimumElement(&_pqueue, &retrieveOneElem.key);
+    retrieveOneElem.data = SPCPriorityQueueExtractMinimumElement(&_pqueue, &retrieveOneElem.key);
     
     XCTAssertTrue(retrieveOneElem.data == oneElem.data && retrieveOneElem.key == oneElem.key,
                   @"Queue returns corrupt element.");
     
     // Make sure the queue is empty.
-    XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&_pqueue, 0) == NULL,
+    XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&_pqueue, 0) == NULL,
                   @"Queue fails to delete minimum element after extraction.");
 }
 
@@ -105,19 +110,19 @@ const size_t kDefaultQueueSize = 4096;
         .data     = (void *)(sizeof(void *))
     };
     
-    XCTAssertTrue(SPPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
+    XCTAssertTrue(SPCPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
                   @"Can't insert element into queue.");
     
-    XCTAssertTrue(SPPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
+    XCTAssertTrue(SPCPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
                   @"Can't insert element into queue twice.");
     
-    retrieveOneElem.data = SPPriorityQueueExtractMinimumElement(&_pqueue, &retrieveOneElem.key);
+    retrieveOneElem.data = SPCPriorityQueueExtractMinimumElement(&_pqueue, &retrieveOneElem.key);
     
     XCTAssertTrue(retrieveOneElem.data == oneElem.data && retrieveOneElem.key == oneElem.key,
                   @"Queue returns corrupt element.");
     
     // Make sure the queue is empty.
-    XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&_pqueue, 0) == NULL,
+    XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&_pqueue, 0) == NULL,
                   @"Queue fails to delete minimum element after extraction.");
 }
 
@@ -131,16 +136,16 @@ const size_t kDefaultQueueSize = 4096;
     };
     
     for (int dups = 0; dups < 1024; ++dups) {
-        XCTAssertTrue(SPPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
+        XCTAssertTrue(SPCPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
                       @"Can't insert element into queue.");
     }
     
-    retrieveElem.data = SPPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
+    retrieveElem.data = SPCPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
     XCTAssertTrue(retrieveElem.data == oneElem.data && retrieveElem.key == oneElem.key,
                   @"Queue returns wrong element.");
     
     // Make sure the queue is empty.
-    XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&_pqueue, 0) == NULL,
+    XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&_pqueue, 0) == NULL,
                   @"Queue still holds elements after extracting everything from it.");
 }
 
@@ -164,38 +169,38 @@ const size_t kDefaultQueueSize = 4096;
     };
     
     for (int dups = 0; dups < kDefaultQueueSize * 4; ++dups) {
-        XCTAssertTrue(SPPriorityQueueInsertElement(&_pqueue, threeElem.key, threeElem.data),
+        XCTAssertTrue(SPCPriorityQueueInsertElement(&_pqueue, threeElem.key, threeElem.data),
                       @"Can't insert element into queue.");
-        XCTAssertTrue(SPPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
+        XCTAssertTrue(SPCPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
                       @"Can't insert element into queue.");
-        XCTAssertTrue(SPPriorityQueueInsertElement(&_pqueue, twoElem.key, twoElem.data),
+        XCTAssertTrue(SPCPriorityQueueInsertElement(&_pqueue, twoElem.key, twoElem.data),
                       @"Can't insert element into queue.");
     }
     
-    retrieveElem.data = SPPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
+    retrieveElem.data = SPCPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
     XCTAssertTrue(retrieveElem.data == oneElem.data && retrieveElem.key == oneElem.key,
                   @"Queue returns wrong element.");
     
-    retrieveElem.data = SPPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
+    retrieveElem.data = SPCPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
     XCTAssertTrue(retrieveElem.data == twoElem.data && retrieveElem.key == twoElem.key,
                   @"Queue returns wrong element.");
     
-    retrieveElem.data = SPPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
+    retrieveElem.data = SPCPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
     XCTAssertTrue(retrieveElem.data == threeElem.data && retrieveElem.key == threeElem.key,
                   @"Queue returns wrong element.");
     
     // Make sure the queue is empty.
-    XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&_pqueue, 0) == NULL,
+    XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&_pqueue, 0) == NULL,
                   @"Queue still holds elements after extracting everything from it.");
 }
 
 
 - (void)testEnforcesLengthLimits
 {
-    SPPriorityQueue localQueue;
+    SPCPriorityQueue localQueue;
     
     const size_t totalNumElems = 16384;
-    XCTAssertTrue(SPPriorityQueueInit(&localQueue, totalNumElems));
+    XCTAssertTrue(SPCPriorityQueueInit(&localQueue, totalNumElems));
     
     for (int iter = 0; iter < 3; ++iter) {
         
@@ -205,34 +210,34 @@ const size_t kDefaultQueueSize = 4096;
                 .key = (double)numElem,
                 .data     = (void *)(sizeof(void *) * numElem)
             };
-            XCTAssertTrue(SPPriorityQueueInsertElement(&localQueue, oneElem.key, oneElem.data),
+            XCTAssertTrue(SPCPriorityQueueInsertElement(&localQueue, oneElem.key, oneElem.data),
                           @"Can't insert element into queue.");
         }
         
         // Attempt to overflow it.
-        XCTAssertFalse(SPPriorityQueueInsertElement(&localQueue, totalNumElems * 1.0 + 1.0, (void *)(sizeof(void *) * (totalNumElems + 1))),
+        XCTAssertFalse(SPCPriorityQueueInsertElement(&localQueue, totalNumElems * 1.0 + 1.0, (void *)(sizeof(void *) * (totalNumElems + 1))),
                        @"Another element was inserted into a full queue.");
-        XCTAssertFalse(SPPriorityQueueInsertElement(&localQueue, totalNumElems * 1.0 + 2.0, (void *)(sizeof(void *) * (totalNumElems + 2))),
+        XCTAssertFalse(SPCPriorityQueueInsertElement(&localQueue, totalNumElems * 1.0 + 2.0, (void *)(sizeof(void *) * (totalNumElems + 2))),
                        @"Another element was inserted into a full queue.");
         
         // Extract everything.
         for (int numElem = 1; numElem <= totalNumElems; ++numElem) {
             test_elem_t retrieveElem;
             
-            retrieveElem.data = SPPriorityQueueExtractMinimumElement(&localQueue, &retrieveElem.key);
+            retrieveElem.data = SPCPriorityQueueExtractMinimumElement(&localQueue, &retrieveElem.key);
             XCTAssertTrue(retrieveElem.data == (void *)(sizeof(void *) * numElem) && retrieveElem.key == (double)numElem,
                           @"Queue returns wrong element.");
         }
-        XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
+        XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
                       @"Queue still holds elements after extracting everything from it.");
     }
     
-    SPPriorityQueueDispose(&localQueue);
+    SPCPriorityQueueDispose(&localQueue);
 }
 
 
 
-- (void)fillQueueWithOrderedElements:(SPPriorityQueue *)localQueue
+- (void)fillQueueWithOrderedElements:(SPCPriorityQueue *)localQueue
                         startingFrom:(const size_t)startIdx
                                 upTo:(const size_t)endIdx
 {
@@ -244,7 +249,7 @@ const size_t kDefaultQueueSize = 4096;
             .data     = (void *)(sizeof(void *) * numElem)
         };
         
-        XCTAssertTrue(SPPriorityQueueInsertElement(localQueue, oneElem.key, oneElem.data),
+        XCTAssertTrue(SPCPriorityQueueInsertElement(localQueue, oneElem.key, oneElem.data),
                       @"Can't insert element into queue.");
     }
     
@@ -256,19 +261,19 @@ const size_t kDefaultQueueSize = 4096;
             .data     = (void *)(sizeof(void *) * numElem)
         };
         
-        XCTAssertTrue(SPPriorityQueueInsertElement(localQueue, oneElem.key, oneElem.data),
+        XCTAssertTrue(SPCPriorityQueueInsertElement(localQueue, oneElem.key, oneElem.data),
                       @"Can't insert element into queue.");
     }
 }
 
-- (void)extractOrderedElementsFromQueue:(SPPriorityQueue *)localQueue
+- (void)extractOrderedElementsFromQueue:(SPCPriorityQueue *)localQueue
                                    upTo:(const size_t)totalNumElems
 {
     // Retrieve everything.
     for (int numElem = 1; numElem <= totalNumElems; ++numElem) {
         test_elem_t retrieveElem;
         
-        retrieveElem.data = SPPriorityQueueExtractMinimumElement(localQueue, &retrieveElem.key);
+        retrieveElem.data = SPCPriorityQueueExtractMinimumElement(localQueue, &retrieveElem.key);
         XCTAssertTrue(retrieveElem.data == (void *)(sizeof(void *) * numElem) && retrieveElem.key == (double)numElem,
                       @"Queue returns wrong element.");
     }
@@ -277,10 +282,10 @@ const size_t kDefaultQueueSize = 4096;
 
 - (void)testHasSaturationResilience
 {
-    SPPriorityQueue localQueue;
+    SPCPriorityQueue localQueue;
     
     const size_t totalNumElems = 1024;
-    XCTAssertTrue(SPPriorityQueueInit(&localQueue, totalNumElems));
+    XCTAssertTrue(SPCPriorityQueueInit(&localQueue, totalNumElems));
 
     
     [self fillQueueWithOrderedElements:&localQueue
@@ -294,7 +299,7 @@ const size_t kDefaultQueueSize = 4096;
             .data     = (void *)(sizeof(void *) * numElem)
         };
         
-        XCTAssertFalse(SPPriorityQueueInsertElement(&localQueue, oneElem.key, oneElem.data),
+        XCTAssertFalse(SPCPriorityQueueInsertElement(&localQueue, oneElem.key, oneElem.data),
                        @"Another element %d was inserted into a full queue.", numElem);
     }
     
@@ -302,7 +307,7 @@ const size_t kDefaultQueueSize = 4096;
                                      upTo:totalNumElems];
     
     // Make sure the queue is empty.
-    XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
+    XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
                   @"Queue still holds elements after extracting everything from it.");
     
     
@@ -314,10 +319,10 @@ const size_t kDefaultQueueSize = 4096;
         [self extractOrderedElementsFromQueue:&localQueue
                                          upTo:totalNumElems];
     }
-    XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
+    XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
                   @"Queue still holds elements after extracting everything from it.");
     
-    SPPriorityQueueDispose(&localQueue);
+    SPCPriorityQueueDispose(&localQueue);
 }
 
 
@@ -332,7 +337,7 @@ const size_t kDefaultQueueSize = 4096;
                 .data     = (void *)(sizeof(void *) * numElem)
             };
             
-            XCTAssertTrue(SPPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
+            XCTAssertTrue(SPCPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
                           @"Can't insert element into queue.");
         }
         
@@ -343,13 +348,13 @@ const size_t kDefaultQueueSize = 4096;
                 .data     = (void *)(sizeof(void *) * numElem)
             };
             
-            XCTAssertTrue(SPPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
+            XCTAssertTrue(SPCPriorityQueueInsertElement(&_pqueue, oneElem.key, oneElem.data),
                           @"Can't insert element into queue.");
             
             // Retrieve from the front.
             test_elem_t retrieveElem;
             
-            retrieveElem.data = SPPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
+            retrieveElem.data = SPCPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
             int expectedNum = (numElem + 1) / 2;
             XCTAssertTrue(retrieveElem.data == (void *)(sizeof(void *) * expectedNum) && retrieveElem.key == (double)expectedNum,
                           @"Queue returns wrong element.");
@@ -359,22 +364,22 @@ const size_t kDefaultQueueSize = 4096;
             // Retrieve from the front.
             test_elem_t retrieveElem;
             
-            retrieveElem.data = SPPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
+            retrieveElem.data = SPCPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
             XCTAssertTrue(retrieveElem.data == (void *)(sizeof(void *) * numElem) && retrieveElem.key == (double)numElem,
                           @"Queue returns wrong element.");
         }
     }
-    XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&_pqueue, 0) == NULL,
+    XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&_pqueue, 0) == NULL,
                   @"Queue still holds elements after extracting everything from it.");
 }
 
 
 - (void)testSameQueueObjectCanBeReused
 {
-    SPPriorityQueue localQueue;
+    SPCPriorityQueue localQueue;
     for (int runs = 0; runs < 500; ++runs) {
         
-        SPPriorityQueueInit(&localQueue, 4096);
+        SPCPriorityQueueInit(&localQueue, 4096);
         
         const size_t kNumElems = 2, mulFactor = 10;
 
@@ -386,22 +391,22 @@ const size_t kDefaultQueueSize = 4096;
         
         [self extractOrderedElementsFromQueue:&localQueue upTo:kNumElems * mulFactor];
         
-        XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
+        XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
                       @"Queue still holds elements after extracting everything from it.");
 
-        SPPriorityQueueDispose(&localQueue);
+        SPCPriorityQueueDispose(&localQueue);
     }
 }
 
 
-- (void)performParallelInserts:(SPPriorityQueue *)localQueue
+- (void)performParallelInserts:(SPCPriorityQueue *)localQueue
               minNumberOfElems:(const size_t)minNumElems
                numberOfThreads:(const size_t)numThreads
                   numberOfRuns:(const size_t)numRuns
 {
     for (int runs = 0; runs < numRuns; ++runs) {
         
-        SPPriorityQueueInit(localQueue, minNumElems * numThreads + MAX(minNumElems, numThreads));
+        SPCPriorityQueueInit(localQueue, minNumElems * numThreads + MAX(minNumElems, numThreads));
         
         dispatch_group_t group = dispatch_group_create();
         dispatch_queue_t queue = dispatch_queue_create("com.pzhivkov.concurrentTestQueue", DISPATCH_QUEUE_CONCURRENT);
@@ -425,16 +430,16 @@ const size_t kDefaultQueueSize = 4096;
         
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         
-        XCTAssertTrue(SPPriorityQueueExtractMinimumElement(localQueue, 0) == NULL,
+        XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(localQueue, 0) == NULL,
                       @"Queue still holds elements after extracting everything from it.");
         
-        SPPriorityQueueDispose(localQueue);
+        SPCPriorityQueueDispose(localQueue);
     }
 }
 
 - (void)testHandlesParallelInsert
 {
-    SPPriorityQueue localQueue;
+    SPCPriorityQueue localQueue;
     [self performParallelInserts:&localQueue
                 minNumberOfElems:256
                  numberOfThreads:16
@@ -443,7 +448,7 @@ const size_t kDefaultQueueSize = 4096;
 
 - (void)testHandlesInsertOnManyThreads
 {
-    SPPriorityQueue localQueue;
+    SPCPriorityQueue localQueue;
     [self performParallelInserts:&localQueue
                 minNumberOfElems:2
                  numberOfThreads:512
@@ -454,13 +459,13 @@ const size_t kDefaultQueueSize = 4096;
 - (void)testHandlesParallelDeletions
 {
     for (int reps = 0; reps < 2000; ++reps) {
-        __block SPPriorityQueue localQueue;
-        __block SPPriorityQueue resultQueue;
+        __block SPCPriorityQueue localQueue;
+        __block SPCPriorityQueue resultQueue;
         
         const size_t totalNumElems = 16;
         const size_t numDelThreads = 32;
-        XCTAssertTrue(SPPriorityQueueInit(&localQueue, totalNumElems));
-        XCTAssertTrue(SPPriorityQueueInit(&resultQueue, totalNumElems));
+        XCTAssertTrue(SPCPriorityQueueInit(&localQueue, totalNumElems));
+        XCTAssertTrue(SPCPriorityQueueInit(&resultQueue, totalNumElems));
         
         
         [self fillQueueWithOrderedElements:&localQueue
@@ -483,9 +488,9 @@ const size_t kDefaultQueueSize = 4096;
                 for (int numElem = 0; numElem < totalNumElems * 2; ++numElem) {
                     test_elem_t retrieveElem;
                     
-                    retrieveElem.data = SPPriorityQueueExtractMinimumElement(&localQueue, &retrieveElem.key);
+                    retrieveElem.data = SPCPriorityQueueExtractMinimumElement(&localQueue, &retrieveElem.key);
                     if (retrieveElem.data) {
-                        SPPriorityQueueInsertElement(&resultQueue, retrieveElem.key, retrieveElem.data);
+                        SPCPriorityQueueInsertElement(&resultQueue, retrieveElem.key, retrieveElem.data);
                     
                         XCTAssertTrue(prevElem.key <= retrieveElem.key, @"The queue does not enforce priorities");
                         prevElem.key = retrieveElem.key;
@@ -499,12 +504,12 @@ const size_t kDefaultQueueSize = 4096;
         
         [self extractOrderedElementsFromQueue:&resultQueue upTo:totalNumElems];
         
-        XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
+        XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
                       @"Queue still holds elements after extracting everything from it.");
-        XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&resultQueue, 0) == NULL,
+        XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&resultQueue, 0) == NULL,
                       @"Queue still holds elements after extracting everything from it.");
-        SPPriorityQueueDispose(&localQueue);
-        SPPriorityQueueDispose(&resultQueue);
+        SPCPriorityQueueDispose(&localQueue);
+        SPCPriorityQueueDispose(&resultQueue);
     }
 }
 
@@ -513,12 +518,12 @@ const size_t kDefaultQueueSize = 4096;
                                    numberOfThreads:(size_t)numThreads
                                       numberOfRuns:(size_t)numRuns
 {
-    //__block SPPriorityQueue localQueue;
-    SPPriorityQueueDispose(&_pqueue);
+    //__block SPCPriorityQueue localQueue;
+    SPCPriorityQueueDispose(&_pqueue);
     for (int reps = 0; reps < numRuns; ++reps) {
         fprintf(stderr, ".");
         const size_t totalNumElems = numElems;
-        XCTAssertTrue(SPPriorityQueueInit(&_pqueue, totalNumElems * numThreads));
+        XCTAssertTrue(SPCPriorityQueueInit(&_pqueue, totalNumElems * numThreads));
         
         
         dispatch_group_t group = dispatch_group_create();
@@ -541,7 +546,7 @@ const size_t kDefaultQueueSize = 4096;
                 for (int numElem = 0; numElem < totalNumElems * 2; ++numElem) {
                     test_elem_t retrieveElem;
                     
-                    retrieveElem.data = SPPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
+                    retrieveElem.data = SPCPriorityQueueExtractMinimumElement(&_pqueue, &retrieveElem.key);
                 }
             });
         }
@@ -549,9 +554,9 @@ const size_t kDefaultQueueSize = 4096;
         dispatch_resume(queue);
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         
-        SPPriorityQueueDispose(&_pqueue);
+        SPCPriorityQueueDispose(&_pqueue);
     }
-    SPPriorityQueueInit(&_pqueue, 4096);
+    SPCPriorityQueueInit(&_pqueue, 4096);
     fprintf(stderr, "\n");
 }
 
@@ -572,11 +577,11 @@ const size_t kDefaultQueueSize = 4096;
     
     minNumElems = floor(minNumElems / numBands) * numBands;
     
-    __block SPPriorityQueue localQueue;
-    __block SPPriorityQueue resultQueue;
+    __block SPCPriorityQueue localQueue;
+    __block SPCPriorityQueue resultQueue;
 
-    SPPriorityQueueInit(&resultQueue, minNumElems * numThreads + MAX(minNumElems, numThreads));
-    SPPriorityQueueInit(&localQueue, minNumElems * numThreads + MAX(minNumElems, numThreads));
+    SPCPriorityQueueInit(&resultQueue, minNumElems * numThreads + MAX(minNumElems, numThreads));
+    SPCPriorityQueueInit(&localQueue, minNumElems * numThreads + MAX(minNumElems, numThreads));
     
     
     dispatch_group_t group = dispatch_group_create();
@@ -607,9 +612,9 @@ const size_t kDefaultQueueSize = 4096;
                 for (int numElem = 1; numElem <= (minNumElems / numBands) * iter; ++numElem) {
                     test_elem_t retrieveElem;
                     
-                    retrieveElem.data = SPPriorityQueueExtractMinimumElement(&localQueue, &retrieveElem.key);
+                    retrieveElem.data = SPCPriorityQueueExtractMinimumElement(&localQueue, &retrieveElem.key);
                     if (retrieveElem.data)
-                        SPPriorityQueueInsertElement(&resultQueue, retrieveElem.key, retrieveElem.data);
+                        SPCPriorityQueueInsertElement(&resultQueue, retrieveElem.key, retrieveElem.data);
                 }
             });
         }
@@ -624,13 +629,13 @@ const size_t kDefaultQueueSize = 4096;
     
     dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
   
-    XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
+    XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&localQueue, 0) == NULL,
                   @"Queue still holds elements after extracting everything from it.");
-    XCTAssertTrue(SPPriorityQueueExtractMinimumElement(&resultQueue, 0) == NULL,
+    XCTAssertTrue(SPCPriorityQueueExtractMinimumElement(&resultQueue, 0) == NULL,
                   @"Queue still holds elements after extracting everything from it.");
     
-    SPPriorityQueueDispose(&localQueue);
-    SPPriorityQueueDispose(&resultQueue);
+    SPCPriorityQueueDispose(&localQueue);
+    SPCPriorityQueueDispose(&resultQueue);
 }
 
 

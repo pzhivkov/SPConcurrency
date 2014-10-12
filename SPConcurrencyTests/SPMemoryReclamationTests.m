@@ -10,8 +10,8 @@
 
 
 #include "SPUtils.h"
-#include "SPPrimitives.h"
-#include "SPMemoryReclamation.h"
+#include "SPCPrimitives.h"
+#include "SPCMemoryReclamation.h"
 
 
 

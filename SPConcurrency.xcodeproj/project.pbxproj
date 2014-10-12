@@ -49,7 +49,7 @@
 		30834FAC190C94E500889C7D /* SPCPriorityQueue.c in Sources */ = {isa = PBXBuildFile; fileRef = 30834FA7190C94E500889C7D /* SPCPriorityQueue.c */; };
 		30834FAD190C94E500889C7D /* SPCRingBuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = 30834FA9190C94E500889C7D /* SPCRingBuffer.c */; };
 		30834FB0190C953900889C7D /* SPConcurrency.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834F9F190C94CB00889C7D /* SPConcurrency.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		30834FB1190C954700889C7D /* SPUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834FA0190C94D800889C7D /* SPUtils.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		30834FB1190C954700889C7D /* SPUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834FA0190C94D800889C7D /* SPUtils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		30834FB2190C958A00889C7D /* SPCPrimitives.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834FA6190C94E500889C7D /* SPCPrimitives.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		30834FB3190C959000889C7D /* SPCMemoryReclamation.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834FA5190C94E500889C7D /* SPCMemoryReclamation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		30834FB4190C959600889C7D /* SPCLockFreeList.h in Headers */ = {isa = PBXBuildFile; fileRef = 30834FA4190C94E500889C7D /* SPCLockFreeList.h */; settings = {ATTRIBUTES = (Public, ); }; };
