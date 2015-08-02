@@ -57,7 +57,7 @@ typedef struct sched_control_data_t sched_control_data_t;
 
 
 
-- (id)initWithResponseQueue:(SPCMessageQueue *)responseQueue
+- (instancetype)initWithResponseQueue:(SPCMessageQueue *)responseQueue
 {
     return [self initWithSize:kDefaultSchedulerQueueSize responseQueue:responseQueue];
 }

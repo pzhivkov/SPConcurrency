@@ -40,7 +40,7 @@
  *
  *  @return The queue if succesful.
  */
-- (instancetype)initWithName:(NSString *)name;
+- (instancetype)initWithName:(NSString *)name NS_DESIGNATED_INITIALIZER;
 
 
 /**

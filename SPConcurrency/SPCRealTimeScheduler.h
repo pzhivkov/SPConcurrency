@@ -83,7 +83,7 @@ typedef void (^SPCRealTimeSchedulerBlock)(UInt64 inIntervalStart, UInt64 inTimeO
  *
  *  @return The scheduler if successful.
  */
-- (instancetype)initWithSize:(size_t)queueSize responseQueue:(SPCMessageQueue *)responseQueue;
+- (instancetype)initWithSize:(size_t)queueSize responseQueue:(SPCMessageQueue *)responseQueue NS_DESIGNATED_INITIALIZER;
 
 
 /**

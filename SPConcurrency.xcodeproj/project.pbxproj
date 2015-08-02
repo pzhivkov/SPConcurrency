@@ -319,8 +319,14 @@
 		30834F6E190C943C00889C7D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+<<<<<<< HEAD
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Peter Zhivkov.";
+=======
+				LastSwiftMigration = 0700;
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = "Peter Zhivkov.";
+>>>>>>> b587eb6... Update to latest Xcode version.
 			};
 			buildConfigurationList = 30834F71190C943C00889C7D /* Build configuration list for PBXProject "SPConcurrency" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -498,6 +504,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -604,6 +611,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "SPConcurrencyTests/SPConcurrencyTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pzhivkov.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = xctest;
@@ -621,6 +629,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "SPConcurrency/SPConcurrency-Prefix.pch";
 				INFOPLIST_FILE = "SPConcurrencyTests/SPConcurrencyTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.pzhivkov.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = xctest;

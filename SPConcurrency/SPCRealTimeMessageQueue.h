@@ -34,7 +34,7 @@
 *
 *  @return The queue if successful.
 */
-- (instancetype)initWithResponseQueue:(SPCMessageQueue *)responseQueue;
+- (instancetype)initWithResponseQueue:(SPCMessageQueue *)responseQueue NS_DESIGNATED_INITIALIZER;
 
 
 /**

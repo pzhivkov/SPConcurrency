@@ -223,7 +223,7 @@ static FORCE_INLINE bool SPC__x86_atomic_compare_and_swap(int32_t *ptr, int32_t 
 
 static FORCE_INLINE int64_t SPC__x86_64_atomic_load(const int64_t *ptr)
 {
-    const int64_t result;
+    int64_t result;
     __asm__ __volatile__("movq %1, %0"
                          : "=q" (result)
                          : "m"  (*(const int64_t *)ptr)
