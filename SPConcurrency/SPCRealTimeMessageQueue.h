@@ -1,11 +1,6 @@
 //
-<<<<<<< HEAD:SPConcurrency/SPRealTimeMessageQueue.h
-//  SPRealTimeMessageQueue.h
-//  Peter Zhivkov.
-=======
 //  SPCRealTimeMessageQueue.h
 //  Peter Zhivkov.
->>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRealTimeMessageQueue.h
 //
 //  Created by Peter Zhivkov on 08/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.

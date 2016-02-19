@@ -1,11 +1,6 @@
 //
-<<<<<<< HEAD:SPConcurrency/SPPriorityQueue.c
-//  SPPriorityQueue.c
-//  Peter Zhivkov.
-=======
 //  SPCPriorityQueue.c
 //  Peter Zhivkov.
->>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCPriorityQueue.c
 //
 //  Created by Peter Zhivkov on 09/02/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.

@@ -1,11 +1,6 @@
 //
-<<<<<<< HEAD
-//  SPLockFreeListTests.m
-//  Peter Zhivkov.
-=======
 //  SPCLockFreeListTests.m
 //  Peter Zhivkov.
->>>>>>> 73d8aff... Fix unit tests.
 //
 //  Created by Peter Zhivkov on 10/02/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.

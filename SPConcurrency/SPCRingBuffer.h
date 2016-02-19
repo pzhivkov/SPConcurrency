@@ -1,23 +1,15 @@
 //
-<<<<<<< HEAD:SPConcurrency/SPRingBuffer.h
-//  SPRingBuffer.h
-//  Peter Zhivkov.
-=======
 //  SPCRingBuffer.h
 //  Peter Zhivkov.
->>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRingBuffer.h
 //
 //  Created by Peter Zhivkov on 05/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
 //
 
-<<<<<<< HEAD:SPConcurrency/SPRingBuffer.h
-#ifndef PZ_SPRingBuffer_h
-#define PZ_SPRingBuffer_h
-=======
+
 #ifndef PZ_SPCRingBuffer_h
 #define PZ_SPCRingBuffer_h
->>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRingBuffer.h
+
 
 #ifndef DEBUG
 #define NDEBUG

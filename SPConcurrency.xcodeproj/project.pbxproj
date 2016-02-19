@@ -319,14 +319,9 @@
 		30834F6E190C943C00889C7D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-<<<<<<< HEAD
-				LastUpgradeCheck = 0510;
-				ORGANIZATIONNAME = "Peter Zhivkov.";
-=======
 				LastSwiftMigration = 0700;
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Peter Zhivkov.";
->>>>>>> b587eb6... Update to latest Xcode version.
 			};
 			buildConfigurationList = 30834F71190C943C00889C7D /* Build configuration list for PBXProject "SPConcurrency" */;
 			compatibilityVersion = "Xcode 3.2";

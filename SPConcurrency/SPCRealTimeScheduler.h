@@ -1,11 +1,6 @@
 //
-<<<<<<< HEAD:SPConcurrency/SPRealTimeScheduler.h
-//  SPRealTimeScheduler.h
-//  Peter Zhivkov.
-=======
 //  SPCRealTimeScheduler.h
 //  Peter Zhivkov.
->>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRealTimeScheduler.h
 //
 //  Created by Peter Zhivkov on 27/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.

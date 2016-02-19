@@ -1,11 +1,6 @@
 //
-<<<<<<< HEAD
-//  SPPriorityQueueTests.m
-//  Peter Zhivkov.
-=======
 //  SPCPriorityQueueTests.m
 //  Peter Zhivkov.
->>>>>>> 73d8aff... Fix unit tests.
 //
 //  Created by Peter Zhivkov on 01/02/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.

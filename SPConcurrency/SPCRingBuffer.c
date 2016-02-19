@@ -1,11 +1,6 @@
 //
-<<<<<<< HEAD:SPConcurrency/SPRingBuffer.c
-//  SPRingBuffer.c
-//  Peter Zhivkov.
-=======
 //  SPCRingBuffer.c
 //  Peter Zhivkov.
->>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCRingBuffer.c
 //
 //  Created by Peter Zhivkov on 05/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.

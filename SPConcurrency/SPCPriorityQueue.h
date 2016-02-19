@@ -1,23 +1,13 @@
 //
-<<<<<<< HEAD:SPConcurrency/SPPriorityQueue.h
-//  SPPriorityQueue.h
-//  Peter Zhivkov.
-=======
 //  SPCPriorityQueue.h
 //  Peter Zhivkov.
->>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCPriorityQueue.h
 //
 //  Created by Peter Zhivkov on 09/02/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
 //
 
-<<<<<<< HEAD:SPConcurrency/SPPriorityQueue.h
-#ifndef PZ_SPPriorityQueue_h
-#define PZ_SPPriorityQueue_h
-=======
 #ifndef PZ_SPCPriorityQueue_h
 #define PZ_SPCPriorityQueue_h
->>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCPriorityQueue.h
 
 #ifndef DEBUG
 #define NDEBUG

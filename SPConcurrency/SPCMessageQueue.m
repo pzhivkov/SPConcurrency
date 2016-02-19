@@ -1,11 +1,6 @@
 //
-<<<<<<< HEAD:SPConcurrency/SPMessageQueue.m
-//  SPMessageQueue.m
-//  Peter Zhivkov.
-=======
 //  SPCMessageQueue.m
 //  Peter Zhivkov.
->>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCMessageQueue.m
 //
 //  Created by Peter Zhivkov on 06/01/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.

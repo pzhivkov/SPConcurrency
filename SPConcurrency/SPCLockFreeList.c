@@ -1,11 +1,6 @@
 //
-<<<<<<< HEAD:SPConcurrency/SPLockFreeList.c
-//  SPLockFreeList.c
-//  Peter Zhivkov.
-=======
 //  SPCLockFreeList.c
 //  Peter Zhivkov.
->>>>>>> 6af3d94... Namespace update.:SPConcurrency/SPCLockFreeList.c
 //
 //  Created by Peter Zhivkov on 09/02/2014.
 //  Copyright (c) 2014 Peter Zhivkov. All rights reserved.
